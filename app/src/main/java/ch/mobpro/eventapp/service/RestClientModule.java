@@ -12,7 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module
 public class RestClientModule {
 
-    static final String BASE_URL = "http://localhost";
+    static final String BASE_URL = "http://192.168.3.121:8080";
 
     private static Retrofit.Builder builder
             = new Retrofit.Builder()

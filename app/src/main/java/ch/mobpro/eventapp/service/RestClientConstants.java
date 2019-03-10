@@ -16,6 +16,6 @@ public class RestClientConstants {
     public static final String ROLE_ROLE_ID = ROLE + "/{id}";
     public static final String AUTH = "/auth";
     public static final String REGISTER = "/register";
-    public static final String AUTH_LOGIN = "/authenticate";
+    public static final String AUTH_LOGIN = "/login";
 }
 

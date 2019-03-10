@@ -4,8 +4,8 @@ import ch.mobpro.eventapp.dto.JwtTokenResponse;
 import ch.mobpro.eventapp.dto.UserCredentials;
 import ch.mobpro.eventapp.dto.UserRegistrationForm;
 import ch.mobpro.eventapp.service.AuthService;
+import io.reactivex.Flowable;
 import io.reactivex.Single;
-import io.reactivex.observers.DisposableSingleObserver;
 
 import javax.inject.Inject;
 
@@ -20,21 +20,16 @@ public class SessionTokenRepository {
         this.authService = authService;
     }
 
-    public void login(UserCredentials userCredentials) {
-        authService.login(userCredentials)
-                .subscribeWith(new DisposableSingleObserver<JwtTokenResponse>() {
-                    @Override
-                    public void onSuccess(JwtTokenResponse value) {
-                        token = value;
-
+    public Flowable<Boolean> login(UserCredentials userCredentials) {
+        return authService.login(userCredentials)
+                .map(jwtToken -> token = jwtToken)
+                .flatMap(jwtToken -> {
+                    if (token != null) {
+                        return Single.just(true);
                     }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        System.out.println("e = [" + e + "]");
-                        token = null;
-                    }
-                });
+                    return Single.just(true);
+                })
+                .toFlowable();
     }
 
     public Single<Void> register(UserRegistrationForm userRegistrationForm) {

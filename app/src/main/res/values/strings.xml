@@ -21,4 +21,5 @@
     <string name="title_event_detail">Event Detail</string>
     <string name="username">Username</string>
     <string name="title_activity_main">MainActivity</string>
+    <string name="wrong_credentials">Username or password is wrong</string>
 </resources>
