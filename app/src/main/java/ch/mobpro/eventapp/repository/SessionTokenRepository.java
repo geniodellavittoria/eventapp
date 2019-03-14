@@ -1,4 +1,4 @@
-package ch.mobpro.eventapp.viewmodel.data;
+package ch.mobpro.eventapp.repository;
 
 import ch.mobpro.eventapp.dto.JwtTokenResponse;
 import ch.mobpro.eventapp.dto.UserCredentials;

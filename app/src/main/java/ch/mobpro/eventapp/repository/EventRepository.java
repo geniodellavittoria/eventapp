@@ -1,4 +1,4 @@
-package ch.mobpro.eventapp.viewmodel.data;
+package ch.mobpro.eventapp.repository;
 
 import ch.mobpro.eventapp.model.Event;
 import ch.mobpro.eventapp.service.EventService;

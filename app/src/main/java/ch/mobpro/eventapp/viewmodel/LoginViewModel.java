@@ -4,13 +4,12 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.text.TextUtils;
 import android.util.Log;
-import ch.mobpro.eventapp.dto.JwtTokenResponse;
+import ch.mobpro.eventapp.R;
 import ch.mobpro.eventapp.dto.UserCredentials;
-import ch.mobpro.eventapp.service.AuthService;
-import ch.mobpro.eventapp.viewmodel.data.SessionTokenRepository;
+import ch.mobpro.eventapp.repository.SessionTokenRepository;
+import ch.mobpro.eventapp.ui.LayoutActivityId;
 import ch.mobpro.eventapp.viewmodel.validation.EmailErrorEvent;
 import ch.mobpro.eventapp.viewmodel.validation.PasswordErrorEvent;
-import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
@@ -24,17 +23,16 @@ import static ch.mobpro.eventapp.viewmodel.validation.ValidationHelper.isEmpty;
 
 public class LoginViewModel extends ViewModel {
 
-    private AuthService authService;
     private SessionTokenRepository sessionTokenRepository;
 
     public UserCredentials userCredentials = new UserCredentials();
     public MutableLiveData<EmailErrorEvent> emailErrorEvent = new MutableLiveData<>();
     public MutableLiveData<PasswordErrorEvent> passwordErrorEvent = new MutableLiveData<>();
     public MutableLiveData<Boolean> loginSuccess = new MutableLiveData<>();
+    public SingleLiveData<LayoutActivityId> layoutActivity = new SingleLiveData<>();
 
     @Inject
-    public LoginViewModel(AuthService authService, SessionTokenRepository sessionTokenRepository) {
-        this.authService = authService;
+    public LoginViewModel(SessionTokenRepository sessionTokenRepository) {
         this.sessionTokenRepository = sessionTokenRepository;
     }
 
@@ -81,5 +79,9 @@ public class LoginViewModel extends ViewModel {
                                 loginSuccess.setValue(false);
                             });
         }
+    }
+
+    public void register() {
+        layoutActivity.setValue(LayoutActivityId.REGISTER_ACTIVITY);
     }
 }

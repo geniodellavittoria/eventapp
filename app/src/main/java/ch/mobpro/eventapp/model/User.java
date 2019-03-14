@@ -1,11 +1,10 @@
 package ch.mobpro.eventapp.model;
 
-import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-public class User implements Serializable {
+public class User {
 
     private String id;
     private byte[] avatar;
@@ -34,6 +33,9 @@ public class User implements Serializable {
     private String twoFASecret;
     private Instant lastLoginTime;
     private Instant expirationDate;
+
+    public User() {
+    }
 
     public User(String id, byte[] avatar, String username, String email, String name, String surname, Instant dateOfBirth,
                 String address, String city, String zipCode, String phone, String mobile, String country, List<Role> roles,

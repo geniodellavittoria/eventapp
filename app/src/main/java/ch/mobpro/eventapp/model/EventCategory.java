@@ -1,5 +1,6 @@
 package ch.mobpro.eventapp.model;
 
+
 public class EventCategory {
     private String id;
 

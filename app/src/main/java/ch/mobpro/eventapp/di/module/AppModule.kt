@@ -15,7 +15,12 @@ class AppModule {
         return createService(AuthService::class.java)
     }
 
-    /*
+    @Singleton
+    @Provides
+    fun provideEventService(): EventService {
+        return createService(EventService::class.java)
+    }
+
     @Singleton
     @Provides
     fun provideEventCategoryService(): EventCategoryService {
@@ -36,14 +41,7 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun provideEventService(): EventService {
-        return createService(EventService::class.java)
-    }
-
-    @Singleton
-    @Provides
     fun provideUserService(): UserService {
         return createService(UserService::class.java)
     }
-    */
 }

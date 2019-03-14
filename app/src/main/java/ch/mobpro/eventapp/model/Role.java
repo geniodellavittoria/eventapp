@@ -1,8 +1,6 @@
 package ch.mobpro.eventapp.model;
 
-import java.io.Serializable;
-
-public class Role implements Serializable {
+public class Role {
 
     private String id;
     private String name;

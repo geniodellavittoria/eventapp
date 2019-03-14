@@ -1,11 +1,12 @@
 package ch.mobpro.eventapp.model;
 
+
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Event implements Serializable {
+public class Event {
 
     private String id;
 
@@ -42,6 +43,9 @@ public class Event implements Serializable {
     private List<EventRegistration> guestList = new ArrayList<>();
 
     private List<EventCategory> categories = new ArrayList<>();
+
+    public Event() {
+    }
 
     public Event(String id, User organizer, String userId, String name, Instant creationTime, Instant startTime,
                  Instant endTime, Integer place, Double price, String description, String eventImage, double longitude,

@@ -1,8 +1,6 @@
 package ch.mobpro.eventapp.model;
 
-import java.io.Serializable;
-
-public class EventRegistration implements Serializable {
+public class EventRegistration {
 
     private String id;
 

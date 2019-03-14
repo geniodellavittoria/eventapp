@@ -4,7 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import ch.mobpro.eventapp.model.Event;
-import ch.mobpro.eventapp.viewmodel.data.EventRepository;
+import ch.mobpro.eventapp.repository.EventRepository;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
