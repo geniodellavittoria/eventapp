@@ -52,6 +52,7 @@ public class EventListViewModel extends ViewModel {
                 eventLoadError.setValue(true);
                 loading.setValue(false);
             }
-        });
+        })
+        .dispose();
     }
 }

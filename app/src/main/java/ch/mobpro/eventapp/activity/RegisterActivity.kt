@@ -6,12 +6,11 @@ import android.os.Bundle
 import ch.mobpro.eventapp.R
 import ch.mobpro.eventapp.base.BaseActivity
 import ch.mobpro.eventapp.databinding.ActivityRegisterBinding
-import ch.mobpro.eventapp.di.util.ViewModelFactory
 import ch.mobpro.eventapp.viewmodel.RegisterViewModel
-import dagger.android.AndroidInjection
 import javax.inject.Inject
 
 class RegisterActivity : BaseActivity<ActivityRegisterBinding>() {
+    val TAG = RegisterActivity::class.java.simpleName
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory

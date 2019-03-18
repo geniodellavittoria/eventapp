@@ -25,6 +25,9 @@ public class UserRegistrationForm {
 
     private String password;
 
+    public UserRegistrationForm() {
+    }
+
     public UserRegistrationForm(String username, String email, String name, String surname, Instant dateOfBirth,
                                 String address, String city, String zipCode, String phone, String mobile, String country,
                                 String password) {
@@ -74,12 +77,24 @@ public class UserRegistrationForm {
         this.surname = surname;
     }
 
-    public Instant getDateOfBirth() {
+    public Instant getDateOfBirthInstant() {
         return dateOfBirth;
+    }
+
+    public String getDateOfBirth() {
+        if (dateOfBirth != null) {
+            return dateOfBirth.toString();
+        }
+        return null;
     }
 
     public void setDateOfBirth(Instant dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
+    }
+
+    public void setDateOfBirth(String dateOfBirth) {
+        // todo: parse string from editview to instant
+        this.dateOfBirth = Instant.now();
     }
 
     public String getAddress() {

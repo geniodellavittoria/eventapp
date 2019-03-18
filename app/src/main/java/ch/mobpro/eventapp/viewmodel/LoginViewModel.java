@@ -77,7 +77,8 @@ public class LoginViewModel extends ViewModel {
                             throwable -> {
                                 Log.e("TAG", "Throwable " + throwable.getMessage());
                                 loginSuccess.setValue(false);
-                            });
+                            })
+                    .dispose();
         }
     }
 

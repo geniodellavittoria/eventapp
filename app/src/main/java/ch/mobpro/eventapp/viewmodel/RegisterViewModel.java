@@ -15,7 +15,8 @@ public class RegisterViewModel extends ViewModel {
 
     private SessionTokenRepository sessionTokenRepository;
 
-    private UserRegistrationForm userRegistrationForm;
+    public UserRegistrationForm userRegistrationForm = new UserRegistrationForm();
+    public String confirmPassword = null;
 
     private MutableLiveData<Boolean> registrationSuccess = new MutableLiveData<>();
 
@@ -31,6 +32,7 @@ public class RegisterViewModel extends ViewModel {
                 .subscribe((t) -> registrationSuccess.setValue(true), t -> {
                     Log.e(TAG, "Throwable " + t.getMessage());
                     registrationSuccess.setValue(false);
-                });
+                })
+                .dispose();
     }
 }

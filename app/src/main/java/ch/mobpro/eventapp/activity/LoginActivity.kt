@@ -11,7 +11,6 @@ import android.widget.Toast
 import ch.mobpro.eventapp.R
 import ch.mobpro.eventapp.base.BaseActivity
 import ch.mobpro.eventapp.databinding.ActivityLoginBinding
-import ch.mobpro.eventapp.di.util.ViewModelFactory
 import ch.mobpro.eventapp.ui.LayoutActivityId
 import ch.mobpro.eventapp.viewmodel.LoginViewModel
 import ch.mobpro.eventapp.viewmodel.validation.EmailErrorEvent
@@ -27,7 +26,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
     val TAG = LoginActivity::class.java.simpleName
 
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+    lateinit var viewModelFactory: ViewModelProvider.Factory
 
     lateinit var viewModel: LoginViewModel
 
