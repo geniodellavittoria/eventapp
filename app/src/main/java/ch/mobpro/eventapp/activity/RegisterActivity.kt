@@ -1,8 +1,11 @@
 package ch.mobpro.eventapp.activity
 
+import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProvider
 import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import ch.mobpro.eventapp.R
 import ch.mobpro.eventapp.base.BaseActivity
 import ch.mobpro.eventapp.databinding.ActivityRegisterBinding
@@ -25,5 +28,18 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>() {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(RegisterViewModel::class.java)
         dataBinding.viewModel = viewModel
+
+        viewModel.registrationSuccess.observe(this, Observer { isSuccess -> onRegistrationSuccess(isSuccess) })
+
+    }
+
+    private fun onRegistrationSuccess(isSuccess: Boolean?) {
+        if (isSuccess == null || !isSuccess) {
+            Toast.makeText(this, "Could not register user", Toast.LENGTH_LONG).show()
+        } else {
+            Intent(this, MainActivity::class.java).also {
+                startActivity(it)
+            }
+        }
     }
 }
