@@ -11,7 +11,10 @@ import ch.mobpro.eventapp.ui.LayoutActivityId;
 import ch.mobpro.eventapp.viewmodel.validation.EmailErrorEvent;
 import ch.mobpro.eventapp.viewmodel.validation.PasswordErrorEvent;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
+import org.reactivestreams.Subscriber;
+import org.reactivestreams.Subscription;
 
 import javax.inject.Inject;
 
@@ -23,17 +26,22 @@ import static ch.mobpro.eventapp.viewmodel.validation.ValidationHelper.isEmpty;
 
 public class LoginViewModel extends ViewModel {
 
+    private final String TAG = this.getClass().getSimpleName();
+
+    private CompositeDisposable disposable;
     private SessionTokenRepository sessionTokenRepository;
 
     public UserCredentials userCredentials = new UserCredentials();
     public MutableLiveData<EmailErrorEvent> emailErrorEvent = new MutableLiveData<>();
     public MutableLiveData<PasswordErrorEvent> passwordErrorEvent = new MutableLiveData<>();
     public MutableLiveData<Boolean> loginSuccess = new MutableLiveData<>();
+    public MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
     public SingleLiveData<LayoutActivityId> layoutActivity = new SingleLiveData<>();
 
     @Inject
     public LoginViewModel(SessionTokenRepository sessionTokenRepository) {
         this.sessionTokenRepository = sessionTokenRepository;
+        disposable = new CompositeDisposable();
     }
 
     public boolean isPasswordValid() {
@@ -69,16 +77,46 @@ public class LoginViewModel extends ViewModel {
     }
 
     public void login() {
+        isLoading.setValue(true);
         if (validateUsername() && validatePassword()) {
-            sessionTokenRepository.login(userCredentials)
+            Log.i(TAG, "Form is valid");
+            disposable.add(sessionTokenRepository.login(userCredentials)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(t -> loginSuccess.setValue(true),
+                    /*.subscribe(new Subscriber<Boolean>() {
+                        @Override
+                        public void onSubscribe(Subscription s) {
+
+                        }
+
+                        @Override
+                        public void onNext(Boolean aBoolean) {
+                            loginSuccess.postValue(true);
+                        }
+
+                        @Override
+                        public void onError(Throwable t) {
+                            Log.e("TAG", "Throwable " + t.getMessage());
+                            loginSuccess.postValue(false);
+                        }
+
+                        @Override
+                        public void onComplete() {
+                            Log.d(TAG, "onComplete");
+                        }
+                    });*/
+                    .subscribe(t -> {
+                                Log.i(TAG, "Login succeded!");
+                                loginSuccess.postValue(true);
+                                isLoading.postValue(false);
+                            },
                             throwable -> {
-                                Log.e("TAG", "Throwable " + throwable.getMessage());
-                                loginSuccess.setValue(false);
-                            })
-                    .dispose();
+                                Log.e(TAG, "Throwable " + throwable.getMessage());
+                                loginSuccess.postValue(false);
+                                isLoading.postValue(false);
+                            }));
+        } else {
+            isLoading.setValue(false);
         }
     }
 

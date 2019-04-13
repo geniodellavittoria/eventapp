@@ -7,6 +7,10 @@ import android.os.Bundle
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.util.Log
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
+import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.Toast
 import ch.mobpro.eventapp.R
 import ch.mobpro.eventapp.base.BaseActivity
@@ -42,8 +46,19 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
         viewModel.emailErrorEvent.observe(this, Observer { onEmailEventError(it) })
         viewModel.passwordErrorEvent.observe(this, Observer { onPasswordEventError(it) })
         viewModel.loginSuccess.observe(this, Observer { onLoginFormSuccess(it) })
+        viewModel.isLoading.observe(this, Observer { onLoading(it) })
         viewModel.layoutActivity.observe(this, Observer { navigateToActivity(it) })
 
+    }
+
+    private fun onLoading(isLoading: Boolean?) {
+        if (isLoading == true) {
+            findViewById<ProgressBar>(R.id.loginProgressBar).isActivated = true
+            findViewById<ProgressBar>(R.id.loginProgressBar).visibility = VISIBLE
+        } else {
+            findViewById<ProgressBar>(R.id.loginProgressBar).isActivated = false
+            findViewById<ProgressBar>(R.id.loginProgressBar).visibility = INVISIBLE
+        }
     }
 
     private fun navigateToActivity(layoutActivityId: LayoutActivityId?) {
@@ -53,13 +68,16 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
         }
     }
 
-    private fun onLoginFormSuccess(it: Boolean?) {
-        if (it == true) {
+    private fun onLoginFormSuccess(loginSuccess: Boolean?) {
+        findViewById<ProgressBar>(R.id.loginProgressBar).isActivated = false
+        findViewById<ProgressBar>(R.id.loginProgressBar).visibility = INVISIBLE
+        if (loginSuccess == true) {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         } else {
             Toast.makeText(this, getString(R.string.wrong_credentials), Toast.LENGTH_LONG).show()
         }
+
     }
 
     private fun onEmailEventError(emailError: EmailErrorEvent?) {

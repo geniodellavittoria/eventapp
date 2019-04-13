@@ -4,7 +4,7 @@ import ch.mobpro.eventapp.dto.JwtTokenResponse;
 import ch.mobpro.eventapp.dto.UserCredentials;
 import ch.mobpro.eventapp.dto.UserRegistrationForm;
 import ch.mobpro.eventapp.service.AuthService;
-import io.reactivex.Flowable;
+import io.reactivex.Observable;
 import io.reactivex.Single;
 
 import javax.inject.Inject;
@@ -20,7 +20,7 @@ public class SessionTokenRepository {
         this.authService = authService;
     }
 
-    public Flowable<Boolean> login(UserCredentials userCredentials) {
+    public Observable<Boolean> login(UserCredentials userCredentials) {
         return authService.login(userCredentials)
                 .map(jwtToken -> token = jwtToken)
                 .flatMap(jwtToken -> {
@@ -29,7 +29,8 @@ public class SessionTokenRepository {
                     }
                     return Single.just(true);
                 })
-                .toFlowable();
+                .toObservable();
+//                .toFlowable();
     }
 
     public Single<Void> register(UserRegistrationForm userRegistrationForm) {

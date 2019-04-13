@@ -52,13 +52,17 @@
 
             <Button
                     android:id="@+id/username_sign_in_button"
-                    style="?android:textAppearanceSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:text="@string/action_sign_in"
                     android:onClick="@{() -> viewModel.login()}"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
+            <ProgressBar
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/loginProgressBar" android:visibility="invisible"/>
 
         </LinearLayout>
         <Button
