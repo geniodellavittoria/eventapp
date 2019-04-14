@@ -29,6 +29,11 @@ abstract class ViewModelModule {
     @ViewModelKey(RegisterViewModel::class)
     internal abstract fun bindRegisterViewModel(registerViewModel: RegisterViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @ViewModelKey(EventListViewModel::class)
+    internal abstract fun bindEventListViewModel(eventListViewModel: EventListViewModel): ViewModel
+
     /*
 
     @Binds

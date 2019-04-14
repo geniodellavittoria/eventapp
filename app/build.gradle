@@ -63,6 +63,8 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxjava:$rxJavaVersion"
     implementation 'com.squareup.retrofit2:adapter-rxjava2:2.5.0'
 
+    implementation 'com.auth0:java-jwt:3.8.0'
+
     //implementation "com.google.dagger:dagger:$daggerVersion"
     //annotationProcessor "com.google.dagger:dagger-compiler:$daggerVersion"
     implementation "com.google.dagger:dagger:$daggerVersion"

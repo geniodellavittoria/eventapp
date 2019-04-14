@@ -9,7 +9,6 @@ import android.content.Intent
 import android.util.Log
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
-import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.Toast
 import ch.mobpro.eventapp.R
@@ -72,7 +71,7 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
         findViewById<ProgressBar>(R.id.loginProgressBar).isActivated = false
         findViewById<ProgressBar>(R.id.loginProgressBar).visibility = INVISIBLE
         if (loginSuccess == true) {
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, EventListActivity::class.java)
             startActivity(intent)
         } else {
             Toast.makeText(this, getString(R.string.wrong_credentials), Toast.LENGTH_LONG).show()

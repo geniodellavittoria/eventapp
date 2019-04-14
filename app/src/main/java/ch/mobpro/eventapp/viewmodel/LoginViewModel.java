@@ -4,7 +4,6 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.text.TextUtils;
 import android.util.Log;
-import ch.mobpro.eventapp.R;
 import ch.mobpro.eventapp.dto.UserCredentials;
 import ch.mobpro.eventapp.repository.SessionTokenRepository;
 import ch.mobpro.eventapp.ui.LayoutActivityId;
@@ -13,8 +12,6 @@ import ch.mobpro.eventapp.viewmodel.validation.PasswordErrorEvent;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
 
 import javax.inject.Inject;
 
@@ -83,28 +80,6 @@ public class LoginViewModel extends ViewModel {
             disposable.add(sessionTokenRepository.login(userCredentials)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    /*.subscribe(new Subscriber<Boolean>() {
-                        @Override
-                        public void onSubscribe(Subscription s) {
-
-                        }
-
-                        @Override
-                        public void onNext(Boolean aBoolean) {
-                            loginSuccess.postValue(true);
-                        }
-
-                        @Override
-                        public void onError(Throwable t) {
-                            Log.e("TAG", "Throwable " + t.getMessage());
-                            loginSuccess.postValue(false);
-                        }
-
-                        @Override
-                        public void onComplete() {
-                            Log.d(TAG, "onComplete");
-                        }
-                    });*/
                     .subscribe(t -> {
                                 Log.i(TAG, "Login succeded!");
                                 loginSuccess.postValue(true);

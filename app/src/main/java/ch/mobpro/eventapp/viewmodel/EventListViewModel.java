@@ -15,7 +15,7 @@ import java.util.List;
 public class EventListViewModel extends ViewModel {
 
 
-    private final EventRepository eventRepository;
+    private EventRepository eventRepository;
 
     private final MutableLiveData<List<Event>> events = new MutableLiveData<>();;
     private final MutableLiveData<Boolean> eventLoadError = new MutableLiveData<>();

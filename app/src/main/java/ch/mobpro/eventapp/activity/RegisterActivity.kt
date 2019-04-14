@@ -37,7 +37,7 @@ class RegisterActivity : BaseActivity<ActivityRegisterBinding>() {
         if (isSuccess == null || !isSuccess) {
             Toast.makeText(this, "Could not register user", Toast.LENGTH_LONG).show()
         } else {
-            Intent(this, MainActivity::class.java).also {
+            Intent(this, EventListActivity::class.java).also {
                 startActivity(it)
             }
         }
