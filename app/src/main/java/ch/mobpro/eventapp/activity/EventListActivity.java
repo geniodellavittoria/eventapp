@@ -1,11 +1,16 @@
 package ch.mobpro.eventapp.activity;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,17 +21,24 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import ch.mobpro.eventapp.R;
+import ch.mobpro.eventapp.adapter.EventListAdapter;
 import ch.mobpro.eventapp.base.BaseActivity;
 import ch.mobpro.eventapp.databinding.ActivityEventListBinding;
+import ch.mobpro.eventapp.di.util.ViewModelFactory;
+import ch.mobpro.eventapp.model.Event;
 import ch.mobpro.eventapp.repository.SessionTokenRepository;
 import ch.mobpro.eventapp.viewmodel.EventListViewModel;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EventListActivity extends BaseActivity<ActivityEventListBinding>
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private String TAG = this.getClass().getSimpleName();
+
+    private List<Event> eventList;
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
@@ -41,6 +53,11 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
         return R.layout.activity_event_list;
     }
 
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager layoutManager;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,10 +68,6 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show());
-
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -64,6 +77,20 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
         NavigationView navigationView = findViewById(R.id.nav_view);
         setSetUserInformationOnNavigationView(navigationView);
         navigationView.setNavigationItemSelectedListener(this);
+
+        recyclerView = (RecyclerView) findViewById(R.id.event_recycler_view);
+        layoutManager = new LinearLayoutManager(this);
+
+        viewModel.getEvents().observe(this, new Observer<List<Event>>() {
+            @Override
+            public void onChanged(@Nullable List<Event> events) {
+                eventList = events;
+            }
+        });
+
+        mAdapter = new EventListAdapter(eventList);
+        recyclerView.setAdapter(mAdapter);
+
     }
 
     private void setSetUserInformationOnNavigationView(NavigationView navigationView) {

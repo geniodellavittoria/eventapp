@@ -17,7 +17,7 @@ public class EventListViewModel extends ViewModel {
 
     private EventRepository eventRepository;
 
-    private final MutableLiveData<List<Event>> events = new MutableLiveData<>();;
+    private final MutableLiveData<List<Event>> events = new MutableLiveData<>();
     private final MutableLiveData<Boolean> eventLoadError = new MutableLiveData<>();
     private final MutableLiveData<Boolean> loading = new MutableLiveData<>();
 
@@ -27,13 +27,15 @@ public class EventListViewModel extends ViewModel {
         loadEvents();
     }
 
-    LiveData<List<Event>> getEvents() {
+    public LiveData<List<Event>> getEvents() {
         return events;
     }
-    LiveData<Boolean> getError() {
+
+    public LiveData<Boolean> getError() {
         return eventLoadError;
     }
-    LiveData<Boolean> getLoading() {
+
+    public LiveData<Boolean> getLoading() {
         return loading;
     }
 
@@ -53,6 +55,6 @@ public class EventListViewModel extends ViewModel {
                 loading.setValue(false);
             }
         })
-        .dispose();
+                .dispose();
     }
 }
