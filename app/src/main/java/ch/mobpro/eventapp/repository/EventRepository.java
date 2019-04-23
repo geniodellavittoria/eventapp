@@ -12,7 +12,7 @@ public class EventRepository {
     private final EventService eventService;
 
     @Inject
-    public EventRepository(EventService eventService) {
+    EventRepository(EventService eventService) {
         this.eventService = eventService;
     }
 
@@ -23,4 +23,9 @@ public class EventRepository {
     public Single<Event> getEvent(String id) {
         return eventService.getEvent(id);
     }
+
+    public Single<Void> createEvent(Event event) {
+        return this.eventService.createEvent(event);
+    }
+
 }

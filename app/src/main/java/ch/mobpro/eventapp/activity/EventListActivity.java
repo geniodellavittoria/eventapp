@@ -1,11 +1,10 @@
 package ch.mobpro.eventapp.activity;
 
-import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,6 +19,7 @@ import ch.mobpro.eventapp.base.BaseActivity;
 import ch.mobpro.eventapp.databinding.ActivityEventListBinding;
 import ch.mobpro.eventapp.repository.SessionTokenRepository;
 import ch.mobpro.eventapp.viewmodel.EventListViewModel;
+import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 
@@ -52,8 +52,8 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
         setSupportActionBar(toolbar);
 
         FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(view -> Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                .setAction("Action", null).show());
+        fab.setOnClickListener(v -> showCreateActivity());
+
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -64,6 +64,11 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
         NavigationView navigationView = findViewById(R.id.nav_view);
         setSetUserInformationOnNavigationView(navigationView);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void showCreateActivity() {
+        Intent intent = new Intent(this, CreateEventActivity.class);
+        startActivity(intent);
     }
 
     private void setSetUserInformationOnNavigationView(NavigationView navigationView) {
@@ -109,7 +114,7 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
+    public boolean onNavigationItemSelected(@NotNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 

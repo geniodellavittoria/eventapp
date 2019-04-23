@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import ch.mobpro.eventapp.di.util.ViewModelFactory
 import ch.mobpro.eventapp.di.util.ViewModelKey
+import ch.mobpro.eventapp.viewmodel.CreateEventViewModel
 import ch.mobpro.eventapp.viewmodel.EventListViewModel
 import ch.mobpro.eventapp.viewmodel.LoginViewModel
 import ch.mobpro.eventapp.viewmodel.RegisterViewModel
@@ -33,6 +34,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(EventListViewModel::class)
     internal abstract fun bindEventListViewModel(eventListViewModel: EventListViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CreateEventViewModel::class)
+    internal abstract fun bindCreateEventViewModel(createEventViewModel: CreateEventViewModel): ViewModel
 
     /*
 

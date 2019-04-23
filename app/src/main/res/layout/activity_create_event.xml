@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable name="viewModel" type="ch.mobpro.eventapp.viewmodel.CreateEventViewModel"/>
+    </data>
+    <android.support.constraint.ConstraintLayout android:layout_width="match_parent"
+                                                 android:layout_height="match_parent">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                      android:orientation="vertical"
+                      app:layout_constraintTop_toTopOf="parent">
+            <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:hint="@string/eventName"
+                    android:text="@{viewModel.event.name}"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                      android:text="@string/event_from"/>
+            <EditText
+                    android:inputType="time"
+                    android:focusable="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/pick_start_time"
+                    android:id="@+id/editStartTime"/>
+            <EditText
+                    android:inputType="date"
+                    android:focusable="false"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/pick_start_date"
+                    android:id="@+id/editStartDate"/>
+            <Button
+                    android:text="@string/create"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/button"
+                    android:onClick="@{() -> viewModel.createEvent()}"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+        </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
+
+
+</layout>
