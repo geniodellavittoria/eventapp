@@ -24,8 +24,8 @@ public class EventRepository {
         return eventService.getEvent(id);
     }
 
-    public Single<Void> createEvent(Event event) {
-        return this.eventService.createEvent(event);
-    }
+//    public Single<Void> createEvent(Event event) {
+//        return this.eventService.createEvent(event);
+//    }
 
 }

@@ -15,7 +15,7 @@ public interface EventService {
     Single<List<Event>> getEvents();
 
     @POST(EVENT)
-    Single<Void> createEvent(@Body Event event);
+    Single<Event> createEvent(@Body Event event);
 
     @PUT(EVENT)
     Single<Void> updateEvent();

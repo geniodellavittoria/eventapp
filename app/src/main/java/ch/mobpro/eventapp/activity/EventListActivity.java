@@ -47,7 +47,6 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(EventListViewModel.class);
         dataBinding.setViewModel(viewModel);
 
-        setContentView(R.layout.activity_event_list);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
