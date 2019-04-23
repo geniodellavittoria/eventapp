@@ -17,6 +17,7 @@ import android.widget.*;
 import ch.mobpro.eventapp.R;
 import ch.mobpro.eventapp.base.BaseActivity;
 import ch.mobpro.eventapp.databinding.ActivityCreateEventBinding;
+import ch.mobpro.eventapp.repository.SessionTokenRepository;
 import ch.mobpro.eventapp.viewmodel.CreateEventViewModel;
 
 import javax.inject.Inject;
@@ -35,6 +36,8 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
     private CreateEventViewModel viewModel;
     private EditText pickStartTime;
     private EditText pickStartDate;
+    private EditText pickEndTime;
+    private EditText pickEndDate;
     private TimePickerDialog timePickerDialog;
     private DatePickerDialog datePickerDialog;
 
@@ -50,7 +53,8 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
         dataBinding.setViewModel(viewModel);
 
         viewModel.getCreationSuccess().observe(this, (onSuccess) -> onCreateSuccess(onSuccess));
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbarDetail);
+        setSupportActionBar(toolbar);
         pickStartTime = findViewById(R.id.editStartTime);
         pickStartTime.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
@@ -65,22 +69,43 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
         });
 
         pickStartDate = findViewById(R.id.editStartDate);
-        pickStartDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Calendar calendar = Calendar.getInstance();
-                int day = calendar.get(Calendar.DAY_OF_MONTH);
-                int month = calendar.get(Calendar.MONTH);
-                int year = calendar.get(Calendar.YEAR);
-                datePickerDialog = new DatePickerDialog(CreateEventActivity.this, (view, y, m, d) -> {
-                    LocalDate date = LocalDate.of(y, m, d);
-                    viewModel.event.setStartDate(date);
-                    pickStartDate.setHint(d + "." + m + "." + y);
-                }, year, month, day);
-                datePickerDialog.show();
-            }
+        pickStartDate.setOnClickListener(v -> {
+            Calendar calendar = Calendar.getInstance();
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            int month = calendar.get(Calendar.MONTH);
+            int year = calendar.get(Calendar.YEAR);
+            datePickerDialog = new DatePickerDialog(CreateEventActivity.this, (view, y, m, d) -> {
+                LocalDate date = LocalDate.of(y, m, d);
+                viewModel.event.setStartDate(date);
+                pickStartDate.setHint(d + "." + m + "." + y);
+            }, year, month, day);
+            datePickerDialog.show();
         });
-        setSupportActionBar(toolbar);
+        pickEndTime = findViewById(R.id.editEndTime);
+        pickEndTime.setOnClickListener(v -> {
+            Calendar calendar = Calendar.getInstance();
+            int hour = calendar.get(Calendar.HOUR);
+            int minute = calendar.get(Calendar.MINUTE);
+            timePickerDialog = new TimePickerDialog(CreateEventActivity.this, (view, hour12, minute12) -> {
+                LocalTime time = LocalTime.of(hour12, minute12);
+                viewModel.event.setEndTime(time);
+                pickEndTime.setHint(hour12 + ":" + minute12);
+            }, hour, minute, true);
+            timePickerDialog.show();
+        });
+        pickEndDate = findViewById(R.id.editEndDate);
+        pickEndDate.setOnClickListener(v -> {
+            Calendar calendar = Calendar.getInstance();
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            int month = calendar.get(Calendar.MONTH);
+            int year = calendar.get(Calendar.YEAR);
+            datePickerDialog = new DatePickerDialog(CreateEventActivity.this, (DatePickerDialog.OnDateSetListener) (view, y, m, d) -> {
+                LocalDate date = LocalDate.of(y, m, d);
+                viewModel.event.setEndDate(date);
+                pickEndDate.setHint(d + "." + m + "." + y);
+            }, year, month, day);
+            datePickerDialog.show();
+        });
     }
 
     private void onCreateSuccess(boolean isSuccess) {

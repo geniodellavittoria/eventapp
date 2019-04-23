@@ -28,7 +28,7 @@ public class CreateEventViewModel extends ViewModel {
     public CreateEventForm event = new CreateEventForm();
 
     @Inject
-    public CreateEventViewModel(EventRepository eventRepository, EventService eventService) {
+    CreateEventViewModel(EventRepository eventRepository, EventService eventService) {
         this.eventService = eventService;
         this.eventRepository = eventRepository;
         disposable = new CompositeDisposable();

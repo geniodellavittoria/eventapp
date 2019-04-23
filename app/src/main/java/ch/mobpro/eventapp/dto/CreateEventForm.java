@@ -2,6 +2,7 @@ package ch.mobpro.eventapp.dto;
 
 import ch.mobpro.eventapp.model.Event;
 
+import java.nio.DoubleBuffer;
 import java.time.*;
 import java.util.Date;
 
@@ -25,17 +26,17 @@ public class CreateEventForm {
 
     private String eventImage;
 
-    private double longitude;
+    private Double longitude;
 
-    private double latitude;
+    private Double latitude;
 
-    private boolean privateEvent;
+    private Boolean privateEvent;
 
     public CreateEventForm() {
     }
 
     public CreateEventForm(String name, LocalTime startTime, LocalDate startDate, LocalTime endTime, LocalDate endDate, Integer place, Double price,
-                           String eventImage, String description) {
+                           String eventImage, String description, Double longitude, Double latitude, Boolean privateEvent) {
         this.name = name;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -53,6 +54,10 @@ public class CreateEventForm {
 
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public LocalTime getStartTime() {
@@ -77,6 +82,14 @@ public class CreateEventForm {
 
     public void setEndTime(LocalTime endTime) {
         this.endTime = endTime;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
     public Integer getPlace() {

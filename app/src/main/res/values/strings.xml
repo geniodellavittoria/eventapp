@@ -116,4 +116,9 @@
     <string name="pick_start_date">Pick Start Date</string>
     <string name="pick_start_time">Pick Start Time</string>
     <string name="event_from">from</string>
+    <string name="event_to">to</string>
+    <string name="eventDescription">describe your event</string>
+    <string name="eventImage">choose Event Image</string>
+    <string name="pick_end_date">Pick End Date</string>
+    <string name="pick_end_time">Pick End Time</string>
 </resources>
