@@ -18,25 +18,25 @@ public class CreateEventForm {
 
     private LocalTime endTime;
 
-    private Integer place;
+    private int place;
 
-    private Double price;
+    private double price;
 
     private String description;
 
     private String eventImage;
 
-    private Double longitude;
+    private double longitude;
 
-    private Double latitude;
+    private double latitude;
 
-    private Boolean privateEvent;
+    private boolean privateEvent;
 
     public CreateEventForm() {
     }
 
-    public CreateEventForm(String name, LocalTime startTime, LocalDate startDate, LocalTime endTime, LocalDate endDate, Integer place, Double price,
-                           String eventImage, String description, Double longitude, Double latitude, Boolean privateEvent) {
+    public CreateEventForm(String name, LocalTime startTime, LocalDate startDate, LocalTime endTime, LocalDate endDate, int place, double price,
+                           String eventImage, String description, double longitude, double latitude, boolean privateEvent) {
         this.name = name;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -92,7 +92,7 @@ public class CreateEventForm {
         this.endDate = endDate;
     }
 
-    public Integer getPlace() {
+    public int getPlace() {
         return place;
     }
 
@@ -100,7 +100,7 @@ public class CreateEventForm {
         this.place = place;
     }
 
-    public Double getPrice() {
+    public double getPrice() {
         return price;
     }
 

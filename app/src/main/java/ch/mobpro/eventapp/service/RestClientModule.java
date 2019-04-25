@@ -1,13 +1,18 @@
 package ch.mobpro.eventapp.service;
 
+import ch.mobpro.eventapp.App;
 import ch.mobpro.eventapp.di.module.ViewModelModule;
+import ch.mobpro.eventapp.repository.SessionTokenRepository;
 import dagger.Module;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import javax.inject.Inject;
 
 @Module
 public class RestClientModule {
@@ -32,6 +37,7 @@ public class RestClientModule {
     public static <S> S createService(Class<S> serviceClass) {
         if (!httpClient.interceptors().contains(logging)) {
             httpClient.addInterceptor(logging);
+            httpClient.addInterceptor(AuthInterceptor.getInstance());
             builder.client(httpClient.build());
             retrofit = builder.build();
         }
@@ -52,5 +58,25 @@ public class RestClientModule {
             retrofit = builder.build();
         }
         return retrofit.create(serviceClass);
+    }
+
+    public static Retrofit.Builder getBuilder() {
+        return builder;
+    }
+
+    public static OkHttpClient.Builder getHttpClient() {
+        return httpClient;
+    }
+
+    public static <S> S buildService(Retrofit.Builder builder, OkHttpClient.Builder clientBuild, Class<S> serviceClass) {
+        addLoggingInterceptor(clientBuild);
+        builder.client(httpClient.build());
+        return builder.build().create(serviceClass);
+    }
+
+    private static void addLoggingInterceptor(OkHttpClient.Builder httpClient) {
+        if (!httpClient.interceptors().contains(logging)) {
+            httpClient.addInterceptor(logging);
+        }
     }
 }

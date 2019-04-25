@@ -4,6 +4,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.text.TextUtils;
 import android.util.Log;
+import ch.mobpro.eventapp.di.component.DaggerApplicationComponent;
 import ch.mobpro.eventapp.dto.UserCredentials;
 import ch.mobpro.eventapp.repository.SessionTokenRepository;
 import ch.mobpro.eventapp.ui.LayoutActivityId;
@@ -39,6 +40,8 @@ public class LoginViewModel extends ViewModel {
     public LoginViewModel(SessionTokenRepository sessionTokenRepository) {
         this.sessionTokenRepository = sessionTokenRepository;
         disposable = new CompositeDisposable();
+        userCredentials.setUsername("pascal");
+        userCredentials.setPassword("test");
     }
 
     public boolean isPasswordValid() {

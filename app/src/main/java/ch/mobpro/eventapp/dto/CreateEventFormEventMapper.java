@@ -23,6 +23,9 @@ public class CreateEventFormEventMapper {
     }
 
     private Instant mapToInstant(LocalTime time, LocalDate date) {
+        if (time == null || date == null) {
+            return null;
+        }
         LocalDateTime localDateTime = LocalDateTime.of(date, time);
         return localDateTime.toInstant(ZoneOffset.UTC);
     }

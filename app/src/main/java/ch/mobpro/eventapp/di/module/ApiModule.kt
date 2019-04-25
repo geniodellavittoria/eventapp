@@ -2,13 +2,14 @@ package ch.mobpro.eventapp.di.module
 
 import ch.mobpro.eventapp.repository.SessionTokenRepository
 import ch.mobpro.eventapp.service.*
-import ch.mobpro.eventapp.service.RestClientModule.createService
+import ch.mobpro.eventapp.service.RestClientModule.*
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
+
 @Module(includes = [RestClientModule::class])
-class AppModule {
+class ApiModule {
 
     @Singleton
     @Provides
@@ -51,4 +52,5 @@ class AppModule {
     fun provideSessionTokenRepository(): SessionTokenRepository {
         return SessionTokenRepository(provideAuthService())
     }
+
 }
