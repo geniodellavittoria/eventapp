@@ -5,7 +5,9 @@ import android.arch.lifecycle.ViewModel;
 import android.util.Log;
 import ch.mobpro.eventapp.dto.CreateEventForm;
 import ch.mobpro.eventapp.dto.CreateEventFormEventMapper;
+import ch.mobpro.eventapp.model.EventCategory;
 import ch.mobpro.eventapp.repository.EventRepository;
+import ch.mobpro.eventapp.service.AuthInterceptor;
 import ch.mobpro.eventapp.service.EventService;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -14,6 +16,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 import javax.inject.Inject;
+import java.util.List;
 
 public class CreateEventViewModel extends ViewModel {
 
@@ -35,8 +38,9 @@ public class CreateEventViewModel extends ViewModel {
     }
 
     public void createEvent() {
-        CreateEventFormEventMapper mapper = new CreateEventFormEventMapper(event);
-        disposable.add(eventService.createEvent(mapper.event)
+        CreateEventFormEventMapper eventMapper = new CreateEventFormEventMapper(event);
+        eventMapper.event.setUserId(AuthInterceptor.getInstance().getUsername());
+        disposable.add(eventService.createEvent(eventMapper.event)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(event -> {

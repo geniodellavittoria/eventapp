@@ -1,10 +1,7 @@
 package ch.mobpro.eventapp.dto;
 
-import ch.mobpro.eventapp.model.Event;
-
-import java.nio.DoubleBuffer;
-import java.time.*;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class CreateEventForm {
 
