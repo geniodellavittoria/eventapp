@@ -43,6 +43,7 @@ public class CreateEventViewModel extends ViewModel {
                     creationSuccess.postValue(true);
                 }, throwable -> {
                     creationSuccess.postValue(false);
+                    Log.e(TAG, "Error occurred", throwable);
                 }));
     }
 

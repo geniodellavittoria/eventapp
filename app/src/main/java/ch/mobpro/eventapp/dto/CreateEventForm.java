@@ -95,7 +95,7 @@ public class CreateEventForm {
         this.endDate = endDate;
     }
 
-    public Integer getPlace() {
+    public int getPlace() {
         return place;
     }
 
@@ -103,7 +103,7 @@ public class CreateEventForm {
         this.place = place;
     }
 
-    public Double getPrice() {
+    public double getPrice() {
         return price;
     }
 
