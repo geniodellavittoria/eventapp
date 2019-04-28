@@ -12,6 +12,9 @@ public class Event {
 
     private User organizer;
 
+    // will be provided by frontend for find full user and store in organizer;
+    private String username;
+
     private String name;
 
     private Instant creationTime;
@@ -82,6 +85,14 @@ public class Event {
 
     public void setOrganizer(User organizer) {
         this.organizer = organizer;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getName() {
