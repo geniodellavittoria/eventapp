@@ -12,8 +12,6 @@ public class Event {
 
     private User organizer;
 
-    private String userId;
-
     private String name;
 
     private Instant creationTime;
@@ -47,13 +45,12 @@ public class Event {
     public Event() {
     }
 
-    public Event(String id, User organizer, String userId, String name, Instant creationTime, Instant startTime,
-                 Instant endTime, Integer place, Double price, String description, String eventImage, double longitude,
-                 double latitude, boolean privateEvent, List<EventInvitation> eventInvitations,
-                 List<EventRegistration> eventRegistrations, List<EventRegistration> guestList, List<EventCategory> categories) {
+    public Event(String id, User organizer, String name, Instant creationTime, Instant startTime, Instant endTime,
+                 Integer place, Double price, String description, String eventImage, double longitude, double latitude,
+                 boolean privateEvent, List<EventInvitation> eventInvitations, List<EventRegistration> eventRegistrations,
+                 List<EventRegistration> guestList, List<EventCategory> categories) {
         this.id = id;
         this.organizer = organizer;
-        this.userId = userId;
         this.name = name;
         this.creationTime = creationTime;
         this.startTime = startTime;
@@ -85,14 +82,6 @@ public class Event {
 
     public void setOrganizer(User organizer) {
         this.organizer = organizer;
-    }
-
-    public String getUserId() {
-        return userId;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
     }
 
     public String getName() {
