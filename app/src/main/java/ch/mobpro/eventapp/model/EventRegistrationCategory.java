@@ -2,28 +2,20 @@ package ch.mobpro.eventapp.model;
 
 public class EventRegistrationCategory {
 
-    private String id;
+    private String category;
 
-    private String Category;
-
-    public EventRegistrationCategory(String id, String category) {
-        this.id = id;
-        Category = category;
+    public EventRegistrationCategory() {
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
+    public EventRegistrationCategory(String category) {
+        this.category = category;
     }
 
     public String getCategory() {
-        return Category;
+        return category;
     }
 
     public void setCategory(String category) {
-        Category = category;
+        this.category = category;
     }
 }

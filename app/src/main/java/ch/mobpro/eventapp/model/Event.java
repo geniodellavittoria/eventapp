@@ -12,7 +12,8 @@ public class Event {
 
     private User organizer;
 
-    private String userId;
+    // will be provided by frontend for find full user and store in organizer;
+    private String username;
 
     private String name;
 
@@ -47,13 +48,12 @@ public class Event {
     public Event() {
     }
 
-    public Event(String id, User organizer, String userId, String name, Instant creationTime, Instant startTime,
-                 Instant endTime, Integer place, Double price, String description, String eventImage, double longitude,
-                 double latitude, boolean privateEvent, List<EventInvitation> eventInvitations,
-                 List<EventRegistration> eventRegistrations, List<EventRegistration> guestList, List<EventCategory> categories) {
+    public Event(String id, User organizer, String name, Instant creationTime, Instant startTime, Instant endTime,
+                 Integer place, Double price, String description, String eventImage, double longitude, double latitude,
+                 boolean privateEvent, List<EventInvitation> eventInvitations, List<EventRegistration> eventRegistrations,
+                 List<EventRegistration> guestList, List<EventCategory> categories) {
         this.id = id;
         this.organizer = organizer;
-        this.userId = userId;
         this.name = name;
         this.creationTime = creationTime;
         this.startTime = startTime;
@@ -87,12 +87,12 @@ public class Event {
         this.organizer = organizer;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getName() {

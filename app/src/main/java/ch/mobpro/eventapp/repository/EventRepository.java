@@ -3,6 +3,7 @@ package ch.mobpro.eventapp.repository;
 import ch.mobpro.eventapp.model.Event;
 import ch.mobpro.eventapp.service.EventService;
 import io.reactivex.Single;
+import retrofit2.http.Headers;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -16,6 +17,7 @@ public class EventRepository {
         this.eventService = eventService;
     }
 
+    @Headers("Content-Type: application/json")
     public Single<List<Event>> getEvents() {
         return eventService.getEvents();
     }

@@ -5,6 +5,8 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.CardView;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -15,13 +17,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import ch.mobpro.eventapp.R;
+import ch.mobpro.eventapp.adapter.CardListAdapter;
 import ch.mobpro.eventapp.base.BaseActivity;
 import ch.mobpro.eventapp.databinding.ActivityEventListBinding;
+import ch.mobpro.eventapp.model.Event;
 import ch.mobpro.eventapp.repository.SessionTokenRepository;
 import ch.mobpro.eventapp.viewmodel.EventListViewModel;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
+import java.util.List;
 
 public class EventListActivity extends BaseActivity<ActivityEventListBinding>
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -63,6 +68,14 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
         NavigationView navigationView = findViewById(R.id.nav_view);
         setSetUserInformationOnNavigationView(navigationView);
         navigationView.setNavigationItemSelectedListener(this);
+
+        RecyclerView eventRecyclerView = findViewById(R.id.event_recycler_view);
+
+        viewModel.getEvents().observe(this, events -> {
+            CardListAdapter cardListAdapter = new CardListAdapter(events);
+            eventRecyclerView.setAdapter(cardListAdapter);
+        });
+        viewModel.loadEvents();
     }
 
     private void showCreateActivity() {

@@ -35,6 +35,7 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
     @Inject
     ViewModelProvider.Factory viewModelFactory;
 
+
     private CreateEventViewModel viewModel;
     private EditText pickStartTime;
     private EditText pickStartDate;
@@ -56,7 +57,7 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(CreateEventViewModel.class);
         dataBinding.setViewModel(viewModel);
 
-        viewModel.getCreationSuccess().observe(this, (onSuccess) -> onCreateSuccess(onSuccess));
+        viewModel.getCreationSuccess().observe(this, this::onCreateSuccess);
         Toolbar toolbar = findViewById(R.id.toolbarDetail);
         setSupportActionBar(toolbar);
         pickStartTime = findViewById(R.id.editStartTime);
@@ -81,7 +82,7 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
             datePickerDialog = new DatePickerDialog(CreateEventActivity.this, (view, y, m, d) -> {
                 LocalDate date = LocalDate.of(y, m, d);
                 viewModel.event.setStartDate(date);
-                pickStartDate.setText(d + "." + m + "." + y);
+                pickStartDate.setText(String.format("%d.%d.%d", d, m, y));
             }, year, month, day);
             datePickerDialog.show();
         });
@@ -93,7 +94,7 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
             timePickerDialog = new TimePickerDialog(CreateEventActivity.this, (view, hour12, minute12) -> {
                 LocalTime time = LocalTime.of(hour12, minute12);
                 viewModel.event.setEndTime(time);
-                pickEndTime.setText(hour12 + ":" + minute12);
+                pickEndTime.setText(String.format("%d:%d", hour12, minute12));
             }, hour, minute, true);
             timePickerDialog.show();
         });
@@ -106,7 +107,7 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
             datePickerDialog = new DatePickerDialog(CreateEventActivity.this, (DatePickerDialog.OnDateSetListener) (view, y, m, d) -> {
                 LocalDate date = LocalDate.of(y, m, d);
                 viewModel.event.setEndDate(date);
-                pickEndDate.setText(d + "." + m + "." + y);
+                pickEndDate.setText(String.format("%d.%d.%d", d, m, y));
             }, year, month, day);
             datePickerDialog.show();
         });

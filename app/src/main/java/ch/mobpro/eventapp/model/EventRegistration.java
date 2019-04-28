@@ -1,16 +1,21 @@
 package ch.mobpro.eventapp.model;
 
+import java.time.Instant;
+
 public class EventRegistration {
 
     private String id;
 
     private EventRegistrationCategory eventRegistrationCategory;
 
-    //private Instant timestamp;
+    private Instant timestamp;
 
     private User user;
 
     private Double paidPrice;
+
+    public EventRegistration() {
+    }
 
     public EventRegistration(String id, EventRegistrationCategory eventRegistrationCategory, User user, Double paidPrice) {
         this.id = id;
@@ -49,5 +54,13 @@ public class EventRegistration {
 
     public void setPaidPrice(Double paidPrice) {
         this.paidPrice = paidPrice;
+    }
+
+    public Instant getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(Instant timestamp) {
+        this.timestamp = timestamp;
     }
 }

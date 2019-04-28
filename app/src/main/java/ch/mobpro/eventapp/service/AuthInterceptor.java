@@ -1,8 +1,11 @@
 package ch.mobpro.eventapp.service;
 
+import android.util.Base64;
+import android.util.Log;
+import ch.mobpro.eventapp.dto.JwtToken;
 import ch.mobpro.eventapp.dto.JwtTokenResponse;
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.interfaces.DecodedJWT;
+import ch.mobpro.eventapp.utils.JWTUtils;
+import ch.mobpro.eventapp.viewmodel.CreateEventViewModel;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.Request;
@@ -12,7 +15,10 @@ import java.io.IOException;
 
 public class AuthInterceptor implements Interceptor {
 
+    private static final String TAG = AuthInterceptor.class.getSimpleName();
+
     private JwtTokenResponse token;
+    private JwtToken jwtTokenData;
 
     private static final AuthInterceptor INSTANCE;
 
@@ -30,6 +36,19 @@ public class AuthInterceptor implements Interceptor {
 
     public void setToken(JwtTokenResponse token) {
         this.token = token;
+        getJwtTokenData();
+    }
+
+    private void getJwtTokenData() {
+        if (token == null) {
+            return;
+        }
+        try {
+            jwtTokenData = JWTUtils.decoded(token.getToken());
+        } catch (Exception e) {
+            Log.e(TAG, "Could not get token information from jwt token", e);
+            jwtTokenData = null;
+        }
     }
 
     public String getToken() {
@@ -37,25 +56,22 @@ public class AuthInterceptor implements Interceptor {
     }
 
     public String getUsername() {
-        if (token != null) {
-            DecodedJWT jwt = JWT.decode(token.getToken());
-            return jwt.getSubject();
+        if (jwtTokenData != null) {
+            return jwtTokenData.sub;
         }
         return "";
     }
 
     public String getSurname() {
-        if (token != null) {
-            DecodedJWT jwt = JWT.decode(token.getToken());
-            return jwt.getClaim("surname").asString();
+        if (jwtTokenData != null) {
+            return jwtTokenData.surname;
         }
         return "";
     }
 
     public String getName() {
-        if (token != null) {
-            DecodedJWT jwt = JWT.decode(token.getToken());
-            return jwt.getClaim("name").asString();
+        if (jwtTokenData != null) {
+            return jwtTokenData.name;
         }
         return "";
     }

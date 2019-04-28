@@ -9,6 +9,9 @@ public class PasswordHistory {
 
     private String passwordHash;
 
+    public PasswordHistory() {
+    }
+
     public PasswordHistory(Instant timestamp, String passwordHash) {
         this.timestamp = timestamp;
         this.passwordHash = passwordHash;

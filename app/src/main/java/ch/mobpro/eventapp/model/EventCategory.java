@@ -2,7 +2,11 @@ package ch.mobpro.eventapp.model;
 
 
 public class EventCategory {
+
     private String category;
+
+    public EventCategory() {
+    }
 
     public EventCategory(String category) {
         this.category = category;
