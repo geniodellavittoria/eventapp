@@ -14,6 +14,9 @@ public class EventRegistration {
 
     private Double paidPrice;
 
+    public EventRegistration() {
+    }
+
     public EventRegistration(String id, EventRegistrationCategory eventRegistrationCategory, User user, Double paidPrice) {
         this.id = id;
         this.eventRegistrationCategory = eventRegistrationCategory;

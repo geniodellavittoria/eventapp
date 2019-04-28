@@ -4,6 +4,9 @@ public class EventInvitation {
 
     private String email;
 
+    public EventInvitation() {
+    }
+
     public EventInvitation(String email) {
         this.email = email;
     }

@@ -4,6 +4,9 @@ public class EventRegistrationCategory {
 
     private String category;
 
+    public EventRegistrationCategory() {
+    }
+
     public EventRegistrationCategory(String category) {
         this.category = category;
     }

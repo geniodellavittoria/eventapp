@@ -3,8 +3,9 @@ package ch.mobpro.eventapp.utils;
 import android.util.Base64;
 import android.util.Log;
 import ch.mobpro.eventapp.dto.JwtToken;
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
@@ -23,9 +24,9 @@ public class JWTUtils {
         }
     }
 
-    private static JwtToken getJson(String strEncoded) throws UnsupportedEncodingException{
+    private static JwtToken getJson(String strEncoded) throws IOException {
         byte[] decodedBytes = Base64.decode(strEncoded, Base64.URL_SAFE);
         String jwt = new String(decodedBytes, StandardCharsets.UTF_8);
-        return new Gson().fromJson(jwt, JwtToken.class);
+        return new ObjectMapper().readValue(jwt, JwtToken.class);
     }
 }
