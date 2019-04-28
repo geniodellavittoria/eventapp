@@ -122,4 +122,5 @@
     <string name="pick_end_date">Pick End Date</string>
     <string name="pick_end_time">Pick End Time</string>
     <string name="eventIsPrivateEvent">private Event</string>
+    <string name="title_activity_event_location_maps">Event Location</string>
 </resources>
