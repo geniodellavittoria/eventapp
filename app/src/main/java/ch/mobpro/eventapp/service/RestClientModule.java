@@ -1,5 +1,7 @@
 package ch.mobpro.eventapp.service;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import dagger.Module;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -13,10 +15,14 @@ public class RestClientModule {
 
     static final String BASE_URL = "http://ec2-13-58-21-44.us-east-2.compute.amazonaws.com:8080";
 
+    private static Gson gson = new GsonBuilder()
+            .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+            .create();
+
     private static Retrofit.Builder builder
             = new Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create());
 
     private static Retrofit retrofit = builder.build();

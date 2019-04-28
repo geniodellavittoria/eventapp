@@ -39,7 +39,7 @@ public class CreateEventViewModel extends ViewModel {
 
     public void createEvent() {
         CreateEventFormEventMapper eventMapper = new CreateEventFormEventMapper(event);
-        eventMapper.event.setUserId(AuthInterceptor.getInstance().getUsername());
+        eventMapper.event.setUsername(AuthInterceptor.getInstance().getUsername());
         disposable.add(eventService.createEvent(eventMapper.event)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
