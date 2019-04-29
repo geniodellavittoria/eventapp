@@ -14,7 +14,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 import ch.mobpro.eventapp.R;
 import ch.mobpro.eventapp.base.BaseActivity;
@@ -34,7 +37,9 @@ import com.google.android.gms.tasks.Task;
 import javax.inject.Inject;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 
 public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding> implements OnMapReadyCallback {
 
@@ -124,6 +129,20 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
                 pickEndDate.setText(String.format("%d.%d.%d", d, m, y));
             }, year, month, day);
             datePickerDialog.show();
+        });
+
+        Spinner categorySpinner = findViewById(R.id.eventCategorySpinner);
+        categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String[] categories = getResources().getStringArray(R.array.eventCategories);
+                viewModel.event.setCategory(categories[position]);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
         });
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
