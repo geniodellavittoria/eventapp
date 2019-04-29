@@ -2,6 +2,7 @@ package ch.mobpro.eventapp.dto;
 
 import ch.mobpro.eventapp.model.Event;
 import ch.mobpro.eventapp.model.EventCategory;
+import ch.mobpro.eventapp.model.EventInvitation;
 
 import java.time.*;
 import java.util.ArrayList;
@@ -22,12 +23,12 @@ public class CreateEventFormEventMapper {
         this.event.setPrice(createEventForm.getPrice());
         this.event.setPrivateEvent(createEventForm.isPrivateEvent());
         this.event.setDescription(createEventForm.getDescription());
-
         List<EventCategory> eventCategories = new ArrayList<EventCategory>();
         eventCategories.add(new EventCategory(createEventForm.getCategory()));
         this.event.setCategories(eventCategories);
         this.event.setLatitude(createEventForm.getLatitude());
         this.event.setLongitude(createEventForm.getLongitude());
+        this.event.setPlace(createEventForm.getPlace());
     }
 
     private Instant mapToInstant(LocalTime time, LocalDate date) {

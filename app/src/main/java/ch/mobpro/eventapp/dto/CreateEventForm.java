@@ -96,7 +96,7 @@ public class CreateEventForm {
         return place;
     }
 
-    public void setPlace(Integer place) {
+    public void setPlace(int place) {
         this.place = place;
     }
 

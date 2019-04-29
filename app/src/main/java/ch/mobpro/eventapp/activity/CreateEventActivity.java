@@ -37,9 +37,7 @@ import com.google.android.gms.tasks.Task;
 import javax.inject.Inject;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Locale;
 
 public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding> implements OnMapReadyCallback {
 
@@ -58,7 +56,6 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
     private TimePickerDialog timePickerDialog;
     private DatePickerDialog datePickerDialog;
     private GoogleMap mMap;
-    private EventLocationMapsFragmentActivity eventLocationMapsFragmentActivity;
     private boolean mLocationPermissionGranted;
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private Location mLastKnownLocation;
@@ -123,7 +120,7 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
             int day = calendar.get(Calendar.DAY_OF_MONTH);
             int month = calendar.get(Calendar.MONTH);
             int year = calendar.get(Calendar.YEAR);
-            datePickerDialog = new DatePickerDialog(CreateEventActivity.this, (DatePickerDialog.OnDateSetListener) (view, y, m, d) -> {
+            datePickerDialog = new DatePickerDialog(CreateEventActivity.this, (view, y, m, d) -> {
                 LocalDate date = LocalDate.of(y, m, d);
                 viewModel.event.setEndDate(date);
                 pickEndDate.setText(String.format("%d.%d.%d", d, m, y));
@@ -145,10 +142,28 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
             }
         });
 
+        EditText editText = findViewById(R.id.placePicker);
+        editText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (!hasFocus) {
+                parseToInt(editText);
+            }
+        });
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+    }
+
+    private void parseToInt(EditText editText) {
+        int placeInt = 0;
+        try {
+            placeInt = Integer.parseInt(editText.getText().toString());
+        } catch (NumberFormatException ex) {
+            Toast.makeText(this, "please enter a number", Toast.LENGTH_SHORT).show();
+        }
+        viewModel.event.setPlace(placeInt);
     }
 
     private void onCreateSuccess(boolean isSuccess) {
@@ -181,16 +196,13 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String permissions[],
+                                           @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         mLocationPermissionGranted = false;
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mLocationPermissionGranted = true;
-                }
+        if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                mLocationPermissionGranted = true;
             }
         }
         updateLocationUI();
