@@ -79,7 +79,8 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.EventC
             holder.eventCategoryText.setText(events.get(position).getCategories().get(0).getCategory());
         }
         holder.eventPriceText.setText(String.format("Eintritt: CHF %1$,.2f", events.get(position).getPrice()));
-        holder.eventAvailablePlaceText.setText("/" + events.get(position).getPlace().toString());
+        holder.eventAvailablePlaceText.setText(String.format("%s/%s", events.get(position).getUsedPlace().toString(),
+                events.get(position).getPlace().toString()));
         String eventDate = formatter.format(events.get(position).getStartTime()) + " - " +
                 formatter.format(events.get(position).getEndTime());
         holder.eventDateText.setText(eventDate);
