@@ -25,6 +25,8 @@ public class Event {
 
     private Integer place;
 
+    private Integer usedPlace;
+
     private Double price;
 
     private String description;
@@ -213,5 +215,13 @@ public class Event {
 
     public void setCategories(List<EventCategory> categories) {
         this.categories = categories;
+    }
+
+    public Integer getUsedPlace() {
+        return usedPlace;
+    }
+
+    public void setUsedPlace(Integer usedPlace) {
+        this.usedPlace = usedPlace;
     }
 }

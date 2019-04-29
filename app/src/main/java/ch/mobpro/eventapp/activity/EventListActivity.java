@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -70,7 +71,7 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
         navigationView.setNavigationItemSelectedListener(this);
 
         RecyclerView eventRecyclerView = findViewById(R.id.event_recycler_view);
-
+        eventRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         viewModel.getEvents().observe(this, events -> {
             CardListAdapter cardListAdapter = new CardListAdapter(events);
             eventRecyclerView.setAdapter(cardListAdapter);
