@@ -3,6 +3,7 @@ package ch.mobpro.eventapp.adapter;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,10 +23,10 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.EventC
         // each data item is just a string in this case
         public ImageView imageView;
         public TextView eventNameText;
-        public EventCardViewHolder(CardView cardView) {
-            super(cardView);
-            imageView = cardView.findViewById(R.id.event_image);
-            eventNameText = cardView.findViewById(R.id.event_name_text);
+        public EventCardViewHolder(View view) {
+            super(view);
+            imageView = view.findViewById(R.id.event_image);
+            eventNameText = view.findViewById(R.id.event_name_text);
         }
     }
 
@@ -40,7 +41,7 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.EventC
     public EventCardViewHolder onCreateViewHolder(ViewGroup parent,
                                                   int viewType) {
         // create a new view
-        CardView v = (CardView) LayoutInflater.from(parent.getContext())
+        View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_event, parent, false);
 
         return new EventCardViewHolder(v);
