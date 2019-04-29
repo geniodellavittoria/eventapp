@@ -27,6 +27,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 
@@ -37,7 +38,7 @@ import java.util.Calendar;
 
 public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding> implements OnMapReadyCallback {
 
-    private static final float DEFAULT_ZOOM = 15f;
+    private static final float DEFAULT_ZOOM = 12f;
     private String TAG = this.getClass().getSimpleName();
 
     @Inject
@@ -57,6 +58,7 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
     private FusedLocationProviderClient mFusedLocationProviderClient;
     private Location mLastKnownLocation;
     private LatLng mDefaultLocation = new LatLng(47.14, 8.43);
+    private Marker marker;
 
     @Override
     protected int layoutRes() {
@@ -142,12 +144,8 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-
         updateLocationUI();
-
         getDeviceLocation();
-
     }
 
     private void getLocationPermission() {
@@ -206,7 +204,7 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
                     if (task.isSuccessful()) {
                         // Set the map's camera position to the current location of the device.
                         mLastKnownLocation = (Location) task.getResult();
-                        mMap.addMarker(new MarkerOptions().position(mDefaultLocation).title("your location"));
+                        marker = mMap.addMarker(new MarkerOptions().position(mDefaultLocation).title("your location"));
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                 new LatLng(mLastKnownLocation.getLatitude(),
                                         mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
@@ -220,7 +218,10 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
                         Toast.makeText(CreateEventActivity.this, String.format("you tapped on lat:%.2f long:%.2f", latLng.latitude, latLng.longitude), Toast.LENGTH_SHORT).show();
                         viewModel.event.setLatitude(latLng.latitude);
                         viewModel.event.setLongitude(latLng.longitude);
-                        mMap.addMarker(new MarkerOptions().position(new LatLng(latLng.latitude, latLng.longitude)).title("your picked location"));
+                        if (marker != null) {
+                            marker.remove();
+                        }
+                        marker = mMap.addMarker(new MarkerOptions().position(new LatLng(latLng.latitude, latLng.longitude)).title("your picked location"));
                     });
                 });
             }
