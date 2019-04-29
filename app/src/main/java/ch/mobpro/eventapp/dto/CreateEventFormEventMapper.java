@@ -27,6 +27,8 @@ public class CreateEventFormEventMapper {
         List<EventCategory> eventCategories = new ArrayList<EventCategory>();
         eventCategories.add(new EventCategory(selectedCategory));
         this.event.setCategories(eventCategories);
+        this.event.setLatitude(createEventForm.getLatitude());
+        this.event.setLongitude(createEventForm.getLongitude());
     }
 
     private Instant mapToInstant(LocalTime time, LocalDate date) {
