@@ -3,6 +3,7 @@ package ch.mobpro.eventapp.service;
 import ch.mobpro.eventapp.dto.JwtTokenResponse;
 import ch.mobpro.eventapp.dto.UserCredentials;
 import ch.mobpro.eventapp.dto.UserRegistrationForm;
+import io.reactivex.Maybe;
 import io.reactivex.Single;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
@@ -17,5 +18,5 @@ public interface AuthService {
     Single<JwtTokenResponse> login(@Body UserCredentials userCredentials);
 
     @POST(AUTH + REGISTER)
-    Single<Void> register(@Body UserRegistrationForm userRegistrationForm);
+    Maybe<Void> register(@Body UserRegistrationForm userRegistrationForm);
 }

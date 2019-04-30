@@ -15,7 +15,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 @Module
 public class RestClientModule {
 
-    static final String BASE_URL = "http://ec2-13-58-21-44.us-east-2.compute.amazonaws.com:8080";
+    static final String BASE_URL = "http://192.168.3.121:8081";
 
     private static ObjectMapper objectMapper = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)

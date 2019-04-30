@@ -4,6 +4,7 @@ import ch.mobpro.eventapp.dto.UserCredentials;
 import ch.mobpro.eventapp.dto.UserRegistrationForm;
 import ch.mobpro.eventapp.service.AuthInterceptor;
 import ch.mobpro.eventapp.service.AuthService;
+import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
@@ -34,7 +35,7 @@ public class SessionTokenRepository{
                 .toObservable();
     }
 
-    public Single<Void> register(UserRegistrationForm userRegistrationForm) {
+    public Maybe<Void> register(UserRegistrationForm userRegistrationForm) {
         return authService.register(userRegistrationForm);
     }
 

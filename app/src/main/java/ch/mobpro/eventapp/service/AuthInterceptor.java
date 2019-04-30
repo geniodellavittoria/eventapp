@@ -85,8 +85,8 @@ public class AuthInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request original = chain.request();
 
-        if (original.url().encodedPath().contains("/login") && original.method().equals("post")
-                || (original.url().encodedPath().contains("/register") && original.method().equals("post"))
+        if (original.url().encodedPath().contains("/login") && original.method().equals("POST")
+                || (original.url().encodedPath().contains("/register") && original.method().equals("POST"))
         ) {
             return chain.proceed(original);
         }
