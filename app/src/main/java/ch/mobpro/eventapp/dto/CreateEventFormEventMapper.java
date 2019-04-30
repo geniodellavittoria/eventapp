@@ -1,8 +1,8 @@
 package ch.mobpro.eventapp.dto;
 
-import ch.mobpro.eventapp.R;
 import ch.mobpro.eventapp.model.Event;
 import ch.mobpro.eventapp.model.EventCategory;
+import ch.mobpro.eventapp.model.EventInvitation;
 
 import java.time.*;
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import java.util.List;
 public class CreateEventFormEventMapper {
 
     public Event event = new Event();
-    private final ArrayList<String> categories = new ArrayList<String>(R.array.eventCategories);
+    private final ArrayList<String> categories = new ArrayList<>();
 
     public CreateEventFormEventMapper(CreateEventForm createEventForm) {
         this.event.setName(createEventForm.getName());
@@ -23,10 +23,12 @@ public class CreateEventFormEventMapper {
         this.event.setPrice(createEventForm.getPrice());
         this.event.setPrivateEvent(createEventForm.isPrivateEvent());
         this.event.setDescription(createEventForm.getDescription());
-        String selectedCategory = categories.get(createEventForm.getCategoryIndex());
         List<EventCategory> eventCategories = new ArrayList<EventCategory>();
-        eventCategories.add(new EventCategory(selectedCategory));
+        eventCategories.add(new EventCategory(createEventForm.getCategory()));
         this.event.setCategories(eventCategories);
+        this.event.setLatitude(createEventForm.getLatitude());
+        this.event.setLongitude(createEventForm.getLongitude());
+        this.event.setPlace(createEventForm.getPlace());
     }
 
     private Instant mapToInstant(LocalTime time, LocalDate date) {

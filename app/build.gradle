@@ -83,4 +83,5 @@ dependencies {
 
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.8'
     implementation 'com.squareup.retrofit2:converter-jackson:2.5.0'
+    implementation 'com.google.android.gms:play-services-location:16.0.0'
 }
