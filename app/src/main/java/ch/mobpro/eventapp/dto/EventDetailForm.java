@@ -1,9 +1,11 @@
 package ch.mobpro.eventapp.dto;
 
+import ch.mobpro.eventapp.model.User;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class CreateEventForm {
+public class EventDetailForm {
 
     private String name;
 
@@ -31,11 +33,13 @@ public class CreateEventForm {
 
     private String category;
 
-    public CreateEventForm() {
+    private User organizer;
+
+    public EventDetailForm() {
     }
 
-    public CreateEventForm(String name, LocalTime startTime, LocalDate startDate, LocalTime endTime, LocalDate endDate, int place, double price,
-                           String eventImage, String description, double longitude, double latitude, boolean privateEvent, String category) {
+    public EventDetailForm(String name, LocalTime startTime, LocalDate startDate, LocalTime endTime, LocalDate endDate, int place, double price,
+                           String eventImage, String description, double longitude, double latitude, boolean privateEvent, String category, User organizer) {
         this.name = name;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -49,6 +53,7 @@ public class CreateEventForm {
         this.latitude = latitude;
         this.privateEvent = privateEvent;
         this.category = category;
+        this.organizer = organizer;
     }
 
 
@@ -154,6 +159,14 @@ public class CreateEventForm {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public User getOrganizer() {
+        return organizer;
+    }
+
+    public void setOrganizer(User organizer) {
+        this.organizer = organizer;
     }
 }
 

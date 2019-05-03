@@ -2,7 +2,6 @@ package ch.mobpro.eventapp.dto;
 
 import ch.mobpro.eventapp.model.Event;
 import ch.mobpro.eventapp.model.EventCategory;
-import ch.mobpro.eventapp.model.EventInvitation;
 
 import java.time.*;
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ public class CreateEventFormEventMapper {
     public Event event = new Event();
     private final ArrayList<String> categories = new ArrayList<>();
 
-    public CreateEventFormEventMapper(CreateEventForm createEventForm) {
+    public CreateEventFormEventMapper(EventDetailForm createEventForm) {
         this.event.setName(createEventForm.getName());
         Instant startTime = mapToInstant(createEventForm.getStartTime(), createEventForm.getStartDate());
         Instant endTime = mapToInstant(createEventForm.getEndTime(), createEventForm.getEndDate());

@@ -22,7 +22,10 @@ import android.widget.Toast;
 import ch.mobpro.eventapp.R;
 import ch.mobpro.eventapp.base.BaseActivity;
 import ch.mobpro.eventapp.databinding.ActivityCreateEventBinding;
+import ch.mobpro.eventapp.databinding.ActivityDetailEventBinding;
+import ch.mobpro.eventapp.service.AuthInterceptor;
 import ch.mobpro.eventapp.viewmodel.CreateEventViewModel;
+import ch.mobpro.eventapp.viewmodel.EditEventViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -39,7 +42,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Calendar;
 
-public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding> implements OnMapReadyCallback {
+public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding> implements OnMapReadyCallback {
 
     private static final float DEFAULT_ZOOM = 12f;
     private String TAG = this.getClass().getSimpleName();
@@ -48,7 +51,7 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
     ViewModelProvider.Factory viewModelFactory;
 
     private final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
-    private CreateEventViewModel viewModel;
+    private EditEventViewModel viewModel;
     private EditText pickStartTime;
     private EditText pickStartDate;
     private EditText pickEndTime;
@@ -61,6 +64,7 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
     private Location mLastKnownLocation;
     private LatLng mDefaultLocation = new LatLng(47.14, 8.43);
     private Marker marker;
+    private boolean isOwner;
 
     @Override
     protected int layoutRes() {
@@ -70,20 +74,23 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(CreateEventViewModel.class);
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(EditEventViewModel.class);
         dataBinding.setViewModel(viewModel);
 
-        viewModel.getCreationSuccess().observe(this, this::onCreateSuccess);
+        if (viewModel.eventDetails.getOrganizer().getUsername() == AuthInterceptor.getInstance().getUsername()) {
+            isOwner = true;
+        }
+        viewModel.getUpdateSuccess().observe(this, this::onCreateSuccess);
+
         Toolbar toolbar = findViewById(R.id.toolbarDetail);
         setSupportActionBar(toolbar);
         pickStartTime = findViewById(R.id.editStartTime);
         pickStartTime.setOnClickListener(v -> {
-            Calendar calendar = Calendar.getInstance();
-            int hour = calendar.get(Calendar.HOUR);
-            int minute = calendar.get(Calendar.MINUTE);
-            timePickerDialog = new TimePickerDialog(CreateEventActivity.this, (view, hour1, minute1) -> {
+            int hour = viewModel.eventDetails.getStartTime().getHour();
+            int minute = viewModel.eventDetails.getStartTime().getMinute();
+            timePickerDialog = new TimePickerDialog(DetailEventActivity.this, (view, hour1, minute1) -> {
                 LocalTime time = LocalTime.of(hour1, minute1);
-                viewModel.event.setStartTime(time);
+                viewModel.eventDetails.setStartTime(time);
                 pickStartTime.setText(hour1 + ":" + minute1);
             }, hour, minute, true);
             timePickerDialog.show();
@@ -91,40 +98,37 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
 
         pickStartDate = findViewById(R.id.editStartDate);
         pickStartDate.setOnClickListener(v -> {
-            Calendar calendar = Calendar.getInstance();
-            int day = calendar.get(Calendar.DAY_OF_MONTH);
-            int month = calendar.get(Calendar.MONTH);
-            int year = calendar.get(Calendar.YEAR);
-            datePickerDialog = new DatePickerDialog(CreateEventActivity.this, (view, y, m, d) -> {
+            int day = viewModel.eventDetails.getStartDate().getDayOfMonth();
+            int month = viewModel.eventDetails.getStartDate().getMonthValue();
+            int year = viewModel.eventDetails.getStartDate().getYear();
+            datePickerDialog = new DatePickerDialog(DetailEventActivity.this, (view, y, m, d) -> {
                 m++;
                 LocalDate date = LocalDate.of(y, m, d);
-                viewModel.event.setStartDate(date);
+                viewModel.eventDetails.setStartDate(date);
                 pickStartDate.setText(String.format("%d.%d.%d", d, m, y));
             }, year, month, day);
             datePickerDialog.show();
         });
         pickEndTime = findViewById(R.id.editEndTime);
         pickEndTime.setOnClickListener(v -> {
-            Calendar calendar = Calendar.getInstance();
-            int hour = calendar.get(Calendar.HOUR);
-            int minute = calendar.get(Calendar.MINUTE);
-            timePickerDialog = new TimePickerDialog(CreateEventActivity.this, (view, hour12, minute12) -> {
+            int hour = viewModel.eventDetails.getEndTime().getHour();
+            int minute = viewModel.eventDetails.getEndTime().getMinute();
+            timePickerDialog = new TimePickerDialog(DetailEventActivity.this, (view, hour12, minute12) -> {
                 LocalTime time = LocalTime.of(hour12, minute12);
-                viewModel.event.setEndTime(time);
+                viewModel.eventDetails.setEndTime(time);
                 pickEndTime.setText(String.format("%d:%d", hour12, minute12));
             }, hour, minute, true);
             timePickerDialog.show();
         });
         pickEndDate = findViewById(R.id.editEndDate);
         pickEndDate.setOnClickListener(v -> {
-            Calendar calendar = Calendar.getInstance();
-            int day = calendar.get(Calendar.DAY_OF_MONTH);
-            int month = calendar.get(Calendar.MONTH);
-            int year = calendar.get(Calendar.YEAR);
-            datePickerDialog = new DatePickerDialog(CreateEventActivity.this, (view, y, m, d) -> {
+            int day = viewModel.eventDetails.getEndDate().getDayOfMonth();
+            int month = viewModel.eventDetails.getEndDate().getMonthValue();
+            int year = viewModel.eventDetails.getEndDate().getYear();
+            datePickerDialog = new DatePickerDialog(DetailEventActivity.this, (view, y, m, d) -> {
                 m++;
                 LocalDate date = LocalDate.of(y, m, d);
-                viewModel.event.setEndDate(date);
+                viewModel.eventDetails.setEndDate(date);
                 pickEndDate.setText(String.format("%d.%d.%d", d, m, y));
             }, year, month, day);
             datePickerDialog.show();
@@ -132,10 +136,14 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
 
         Spinner categorySpinner = findViewById(R.id.eventCategorySpinner);
         String[] categories = getResources().getStringArray(R.array.eventCategories);
+        for (int i = 0; i < categories.length; i++)
+            if (categories[i] == viewModel.eventDetails.getCategory())
+                categorySpinner.setSelection(i);
+
         categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                viewModel.event.setCategory(categories[position]);
+                viewModel.eventDetails.setCategory(categories[position]);
             }
 
             @Override
@@ -145,6 +153,7 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
         });
 
         EditText editText = findViewById(R.id.placePicker);
+        editText.setText(String.valueOf(viewModel.eventDetails.getPlace()));
         editText.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
                 parseToInt(editText);
@@ -165,7 +174,7 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
         } catch (NumberFormatException ex) {
             Toast.makeText(this, "please enter a number", Toast.LENGTH_SHORT).show();
         }
-        viewModel.event.setPlace(placeInt);
+        viewModel.eventDetails.setPlace(placeInt);
     }
 
     private void onCreateSuccess(boolean isSuccess) {
@@ -232,33 +241,21 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
     private void getDeviceLocation() {
         try {
             if (mLocationPermissionGranted) {
-                Task locationResult = mFusedLocationProviderClient.getLastLocation();
-                locationResult.addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        // Set the map's camera position to the current location of the device.
-                        mLastKnownLocation = (Location) task.getResult();
-                        marker = mMap.addMarker(new MarkerOptions().position(mDefaultLocation).title("your location"));
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                                new LatLng(mLastKnownLocation.getLatitude(),
-                                        mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
-                    } else {
-                        Log.d(TAG, "Current location is null. Using defaults.");
-                        Log.e(TAG, "Exception: %s", task.getException());
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
-                        mMap.getUiSettings().setMyLocationButtonEnabled(false);
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                        new LatLng(viewModel.eventDetails.getLatitude(),
+                                viewModel.eventDetails.getLongitude()), DEFAULT_ZOOM));
+                mMap.setOnMapClickListener(latLng -> {
+                    Toast.makeText(DetailEventActivity.this, String.format("you tapped on lat:%.2f long:%.2f", latLng.latitude, latLng.longitude), Toast.LENGTH_SHORT).show();
+                    viewModel.eventDetails.setLatitude(latLng.latitude);
+                    viewModel.eventDetails.setLongitude(latLng.longitude);
+                    if (marker != null) {
+                        marker.remove();
                     }
-                    mMap.setOnMapClickListener(latLng -> {
-                        Toast.makeText(CreateEventActivity.this, String.format("you tapped on lat:%.2f long:%.2f", latLng.latitude, latLng.longitude), Toast.LENGTH_SHORT).show();
-                        viewModel.event.setLatitude(latLng.latitude);
-                        viewModel.event.setLongitude(latLng.longitude);
-                        if (marker != null) {
-                            marker.remove();
-                        }
-                        marker = mMap.addMarker(new MarkerOptions().position(new LatLng(latLng.latitude, latLng.longitude)).title("your picked location"));
-                    });
+                    marker = mMap.addMarker(new MarkerOptions().position(new LatLng(latLng.latitude, latLng.longitude)).title("your picked location"));
                 });
             }
-        } catch (SecurityException e) {
+        } catch (
+                SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
         }
     }
