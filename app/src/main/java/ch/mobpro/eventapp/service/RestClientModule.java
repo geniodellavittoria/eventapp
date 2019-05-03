@@ -15,7 +15,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 @Module
 public class RestClientModule {
 
-    static final String BASE_URL = "http://192.168.3.121:8081";
+    static final String BASE_URL = "http://ec2-13-58-21-44.us-east-2.compute.amazonaws.com:8080";
 
     private static ObjectMapper objectMapper = new ObjectMapper()
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
@@ -50,7 +50,7 @@ public class RestClientModule {
     public static <S> S createService(Class<S> serviceClass, final String token) {
         if (token != null) {
             httpClient.interceptors().clear();
-            httpClient.addInterceptor( chain -> {
+            httpClient.addInterceptor(chain -> {
                 Request original = chain.request();
                 Request.Builder builder1 = original.newBuilder()
                         .header("Authorization", token);

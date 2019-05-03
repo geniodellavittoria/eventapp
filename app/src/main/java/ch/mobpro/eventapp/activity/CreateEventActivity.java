@@ -96,6 +96,7 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
             int month = calendar.get(Calendar.MONTH);
             int year = calendar.get(Calendar.YEAR);
             datePickerDialog = new DatePickerDialog(CreateEventActivity.this, (view, y, m, d) -> {
+                m++;
                 LocalDate date = LocalDate.of(y, m, d);
                 viewModel.event.setStartDate(date);
                 pickStartDate.setText(String.format("%d.%d.%d", d, m, y));
@@ -121,6 +122,7 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
             int month = calendar.get(Calendar.MONTH);
             int year = calendar.get(Calendar.YEAR);
             datePickerDialog = new DatePickerDialog(CreateEventActivity.this, (view, y, m, d) -> {
+                m++;
                 LocalDate date = LocalDate.of(y, m, d);
                 viewModel.event.setEndDate(date);
                 pickEndDate.setText(String.format("%d.%d.%d", d, m, y));
