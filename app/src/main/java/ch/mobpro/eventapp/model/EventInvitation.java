@@ -1,6 +1,8 @@
 package ch.mobpro.eventapp.model;
 
-public class EventInvitation {
+import java.io.Serializable;
+
+public class EventInvitation implements Serializable {
 
     private String email;
 

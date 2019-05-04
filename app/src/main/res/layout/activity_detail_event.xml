@@ -19,15 +19,14 @@
                         android:layout_width="match_parent"
                         android:layout_weight="1">
                     <EditText
-                            android:enabled="@={isOwner}"
+                            android:id="@+id/editTextName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="text"
                             android:hint="@string/eventName"
-                            android:text="@={viewModel.event.name}" android:importantForAutofill="no"/>
+                            android:text="@={viewModel.eventDetails.name}" android:importantForAutofill="no"/>
                 </android.support.design.widget.TextInputLayout>
                 <Spinner
-                        android:enabled="@={isOwner}"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/eventCategorySpinner"
@@ -48,7 +47,6 @@
                         android:layout_weight="1">
 
                     <EditText
-                            android:enabled="@={isOwner}"
                             android:inputType="time"
                             android:focusable="false"
                             android:layout_width="match_parent"
@@ -62,7 +60,6 @@
                         android:layout_width="match_parent"
                         android:layout_weight="1">
                     <EditText
-                            android:enabled="@={isOwner}"
                             android:inputType="date"
                             android:focusable="false"
                             android:layout_width="match_parent"
@@ -82,7 +79,6 @@
                         android:layout_width="match_parent"
                         android:layout_weight="1">
                     <EditText
-                            android:enabled="@={isOwner}"
                             android:inputType="time"
                             android:focusable="false"
                             android:layout_width="match_parent"
@@ -96,7 +92,6 @@
                         android:layout_width="match_parent"
                         android:layout_weight="1">
                     <EditText
-                            android:enabled="@={isOwner}"
                             android:inputType="date"
                             android:focusable="false"
                             android:layout_width="match_parent"
@@ -110,31 +105,31 @@
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent">
                 <EditText
-                        android:enabled="@={isOwner}"
+                        android:id="@+id/editTextDescription"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="text"
                         android:hint="@string/eventDescription"
-                        android:text="@={viewModel.event.description}" android:importantForAutofill="no"/>
+                        android:text="@={viewModel.eventDetails.description}" android:importantForAutofill="no"/>
             </android.support.design.widget.TextInputLayout>
 
             <CheckBox
-                    android:enabled="@={isOwner}"
+                    android:id="@+id/checkBoxIsPrivate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/eventIsPrivateEvent"
-                    android:checked="@={viewModel.event.privateEvent}"/>
+                    android:checked="@={viewModel.eventDetails.privateEvent}"/>
             <Button
-                    android:enabled="@={isOwner}"
+                    android:id="@+id/imageBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/eventImage"/>
+
             <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
                 <EditText
-                        android:enabled="@={isOwner}"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/placePicker"
@@ -143,19 +138,10 @@
             </android.support.design.widget.TextInputLayout>
 
             <fragment
-                    android:enabled="@={isOwner}"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:id="@+id/map"
                     android:name="com.google.android.gms.maps.SupportMapFragment"/>
         </LinearLayout>
-        <Button
-                android:visibility="@={isOwner}"
-                android:text="@string/save"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/button"
-                android:onClick="@{() -> viewModel.updateEvent()}"
-                app:layout_constraintBottom_toBottomOf="parent"/>
     </android.support.constraint.ConstraintLayout>
 </layout>

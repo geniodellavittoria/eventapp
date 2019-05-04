@@ -56,6 +56,10 @@
                 android:name=".activity.CreateEventActivity"
                 android:label="Create Event">
         </activity>
+        <activity
+                android:name=".activity.DetailEventActivity"
+                android:label="Details Event">
+        </activity>
     </application>
 
 </manifest>

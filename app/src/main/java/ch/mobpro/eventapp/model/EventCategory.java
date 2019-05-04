@@ -1,7 +1,9 @@
 package ch.mobpro.eventapp.model;
 
 
-public class EventCategory {
+import java.io.Serializable;
+
+public class EventCategory implements Serializable {
 
     private String category;
 

@@ -3,7 +3,7 @@ package ch.mobpro.eventapp.model;
 import java.io.Serializable;
 import java.time.Instant;
 
-public class PasswordHistory {
+public class PasswordHistory implements Serializable {
 
     private Instant timestamp;
 

@@ -1,9 +1,6 @@
 package ch.mobpro.eventapp.di.module;
 
-import ch.mobpro.eventapp.activity.CreateEventActivity;
-import ch.mobpro.eventapp.activity.EventListActivity;
-import ch.mobpro.eventapp.activity.LoginActivity;
-import ch.mobpro.eventapp.activity.RegisterActivity;
+import ch.mobpro.eventapp.activity.*;
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
 
@@ -20,4 +17,7 @@ public abstract class ActivityModule {
 
     @ContributesAndroidInjector(modules = {FragmentBuildersModule.class})
     abstract CreateEventActivity contributeCreateEventActivity();
+
+    @ContributesAndroidInjector(modules = {FragmentBuildersModule.class})
+    abstract DetailEventActivity contributeDetailEventActivity();
 }

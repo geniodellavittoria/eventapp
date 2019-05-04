@@ -1,12 +1,19 @@
 package ch.mobpro.eventapp.adapter;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import androidx.recyclerview.selection.ItemDetailsLookup;
 import ch.mobpro.eventapp.R;
+import ch.mobpro.eventapp.activity.DetailEventActivity;
+import ch.mobpro.eventapp.activity.EventListActivity;
 import ch.mobpro.eventapp.model.Event;
 import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Text;
@@ -20,17 +27,18 @@ import java.util.Locale;
 public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.EventCardViewHolder> {
 
     DateTimeFormatter formatter =
-            DateTimeFormatter.ofLocalizedDateTime( FormatStyle.SHORT )
-                    .withLocale( Locale.UK )
-                    .withZone( ZoneId.systemDefault() );
+            DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT)
+                    .withLocale(Locale.UK)
+                    .withZone(ZoneId.systemDefault());
 
 
     private List<Event> events;
+    private OnEventListener onEventListener;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
-    public static class EventCardViewHolder extends RecyclerView.ViewHolder {
+    public static class EventCardViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         // each data item is just a string in this case
         public ImageView eventImage;
         public TextView eventNameText;
@@ -39,8 +47,9 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.EventC
         public TextView eventPriceText;
         public TextView eventDateText;
         public TextView eventLocationText;
+        public OnEventListener onEventListener;
 
-        public EventCardViewHolder(View view) {
+        public EventCardViewHolder(View view, OnEventListener onEventListener) {
             super(view);
             eventImage = view.findViewById(R.id.event_image);
             eventCategoryText = view.findViewById(R.id.event_category_text);
@@ -49,12 +58,21 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.EventC
             eventPriceText = view.findViewById(R.id.event_price_text);
             eventDateText = view.findViewById(R.id.event_date_text);
             eventLocationText = view.findViewById(R.id.event_location_text);
+            this.onEventListener = onEventListener;
+            view.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View v) {
+            onEventListener.onEventClick(getAdapterPosition());
+
         }
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public CardListAdapter(List<Event> events) {
+    public CardListAdapter(List<Event> events, OnEventListener onEventListener) {
         this.events = events;
+        this.onEventListener = onEventListener;
     }
 
     // Create new views (invoked by the layout manager)
@@ -66,7 +84,7 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.EventC
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_event, parent, false);
 
-        return new EventCardViewHolder(v);
+        return new EventCardViewHolder(v, this.onEventListener);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
@@ -80,7 +98,7 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.EventC
         }
         holder.eventPriceText.setText(String.format("Eintritt: CHF %1$,.2f", events.get(position).getPrice()));
         holder.eventAvailablePlaceText.setText(String.format("%s/%s", events.get(position).getUsedPlace().toString(),
-                events.get(position).getPlace().toString()));
+                events.get(position).getPlace()));
         String eventDate = formatter.format(events.get(position).getStartTime()) + " - " +
                 formatter.format(events.get(position).getEndTime());
         holder.eventDateText.setText(eventDate);
@@ -91,4 +109,10 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.EventC
     public int getItemCount() {
         return events.size();
     }
+
+    public interface OnEventListener {
+        void onEventClick(int position);
+    }
+
+
 }

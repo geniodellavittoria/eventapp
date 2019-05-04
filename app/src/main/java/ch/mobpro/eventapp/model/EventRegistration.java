@@ -1,8 +1,9 @@
 package ch.mobpro.eventapp.model;
 
+import java.io.Serializable;
 import java.time.Instant;
 
-public class EventRegistration {
+public class EventRegistration implements Serializable {
 
     private String id;
 

@@ -5,17 +5,17 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import ch.mobpro.eventapp.R;
 import ch.mobpro.eventapp.adapter.CardListAdapter;
@@ -23,6 +23,7 @@ import ch.mobpro.eventapp.base.BaseActivity;
 import ch.mobpro.eventapp.databinding.ActivityEventListBinding;
 import ch.mobpro.eventapp.model.Event;
 import ch.mobpro.eventapp.repository.SessionTokenRepository;
+import ch.mobpro.eventapp.service.AuthInterceptor;
 import ch.mobpro.eventapp.viewmodel.EventListViewModel;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,14 +31,17 @@ import javax.inject.Inject;
 import java.util.List;
 
 public class EventListActivity extends BaseActivity<ActivityEventListBinding>
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, CardListAdapter.OnEventListener {
 
     private String TAG = this.getClass().getSimpleName();
+    public RecyclerView mRecView;
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
 
+    private List<Event> events;
     private EventListViewModel viewModel;
+    private View.OnClickListener onItemClickListener;
 
     @Inject
     public SessionTokenRepository sessionTokenRepository;
@@ -70,11 +74,12 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
         setSetUserInformationOnNavigationView(navigationView);
         navigationView.setNavigationItemSelectedListener(this);
 
-        RecyclerView eventRecyclerView = findViewById(R.id.event_recycler_view);
-        eventRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        viewModel.getEvents().observe(this, events -> {
-            CardListAdapter cardListAdapter = new CardListAdapter(events);
-            eventRecyclerView.setAdapter(cardListAdapter);
+        mRecView = findViewById(R.id.event_recycler_view);
+        mRecView.setLayoutManager(new LinearLayoutManager(this));
+        viewModel.getEvents().observe(this, e -> {
+            this.events = e;
+            CardListAdapter cardListAdapter = new CardListAdapter(events, this);
+            mRecView.setAdapter(cardListAdapter);
         });
         viewModel.loadEvents();
     }
@@ -91,6 +96,10 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
 
         TextView navName = headerView.findViewById(R.id.navigation_name_text);
         navName.setText(String.format("%s %s", sessionTokenRepository.getName(), sessionTokenRepository.getSurname()));
+    }
+
+    public void setItemClickListener(View.OnClickListener clickListener) {
+        onItemClickListener = clickListener;
     }
 
     @Override
@@ -148,5 +157,14 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onEventClick(int position) {
+        Log.d(TAG, "onEventClick: clicked on" + position);
+        Intent intent = new Intent(this, DetailEventActivity.class);
+        Event selectedEvent = events.get(position);
+        intent.putExtra("event", selectedEvent);
+        startActivity(intent);
     }
 }

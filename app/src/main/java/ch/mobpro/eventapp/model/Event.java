@@ -1,12 +1,15 @@
 package ch.mobpro.eventapp.model;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Event {
+public class Event implements Serializable {
 
     private String id;
 
@@ -23,9 +26,9 @@ public class Event {
 
     private Instant endTime;
 
-    private Integer place;
+    private int place;
 
-    private Integer usedPlace;
+    private int usedPlace;
 
     private Double price;
 
@@ -129,11 +132,11 @@ public class Event {
         this.endTime = endTime;
     }
 
-    public Integer getPlace() {
+    public int getPlace() {
         return place;
     }
 
-    public void setPlace(Integer place) {
+    public void setPlace(int place) {
         this.place = place;
     }
 

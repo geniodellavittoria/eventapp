@@ -1,10 +1,11 @@
 package ch.mobpro.eventapp.model;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
-public class User {
+public class User implements Serializable {
 
     private String id;
     private byte[] avatar;

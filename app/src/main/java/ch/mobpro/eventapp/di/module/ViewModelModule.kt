@@ -4,10 +4,7 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import ch.mobpro.eventapp.di.util.ViewModelFactory
 import ch.mobpro.eventapp.di.util.ViewModelKey
-import ch.mobpro.eventapp.viewmodel.CreateEventViewModel
-import ch.mobpro.eventapp.viewmodel.EventListViewModel
-import ch.mobpro.eventapp.viewmodel.LoginViewModel
-import ch.mobpro.eventapp.viewmodel.RegisterViewModel
+import ch.mobpro.eventapp.viewmodel.*
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -39,6 +36,12 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(CreateEventViewModel::class)
     internal abstract fun bindCreateEventViewModel(createEventViewModel: CreateEventViewModel): ViewModel
+
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(EditEventViewModel::class)
+    internal abstract fun bindEditEventViewModel(editEventViewModel: EditEventViewModel): ViewModel
 
     /*
 
