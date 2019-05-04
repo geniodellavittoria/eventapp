@@ -21,7 +21,7 @@ public interface EventService {
     Single<Void> updateEvent(@Path("id") String id, @Body Event event);
 
     @DELETE(EVENT + ID)
-    Single<Void> deleteEvent();
+    Single<Void> deleteEvent(@Path("id") String id);
 
     @GET(EVENT + ID)
     Single<Event> getEvent(String id);
