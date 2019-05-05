@@ -125,4 +125,5 @@
     <string name="title_activity_event_location_maps">Event Location</string>
     <string name="placePickerHint">number of attending people</string>
     <string name="save">save changes</string>
+    <string name="action_search">search</string>
 </resources>
