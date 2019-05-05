@@ -246,15 +246,13 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
         }
     }
 
-
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NotNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if (id == R.id.nav_manage) {
-
+            startActivity(new Intent(this, SettingsActivity.class));
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

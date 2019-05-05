@@ -23,6 +23,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import ch.mobpro.eventapp.R;
+import ch.mobpro.eventapp.fragment.SettingsFragment;
 
 import java.util.List;
 
