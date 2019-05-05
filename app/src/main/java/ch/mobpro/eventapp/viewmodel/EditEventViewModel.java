@@ -1,11 +1,11 @@
 package ch.mobpro.eventapp.viewmodel;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.util.Log;
 import ch.mobpro.eventapp.dto.CreateEventFormEventMapper;
 import ch.mobpro.eventapp.dto.EventDetailForm;
-import ch.mobpro.eventapp.model.Event;
 import ch.mobpro.eventapp.repository.EventRepository;
 import ch.mobpro.eventapp.service.EventService;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -23,6 +23,7 @@ public class EditEventViewModel extends ViewModel {
 
     public EventDetailForm eventDetails = new EventDetailForm();
     private MutableLiveData<Boolean> updateSuccess = new MutableLiveData<>();
+    private MutableLiveData<String> updateEventTitle = new MutableLiveData<>();
 
     @Inject
     public EditEventViewModel(EventRepository eventRepository, EventService eventService) {
@@ -45,7 +46,15 @@ public class EditEventViewModel extends ViewModel {
 
     }
 
+    public void updateEventName(CharSequence name, int start, int before, int count) {
+        updateEventTitle.postValue(name.toString());
+    }
+
     public MutableLiveData<Boolean> getUpdateSuccess() {
         return updateSuccess;
+    }
+
+    public LiveData<String> getUpdatedEventName() {
+        return updateEventTitle;
     }
 }
