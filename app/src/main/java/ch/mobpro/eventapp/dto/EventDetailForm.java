@@ -1,9 +1,12 @@
 package ch.mobpro.eventapp.dto;
 
+import ch.mobpro.eventapp.model.Event;
 import ch.mobpro.eventapp.model.User;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneOffset;
 
 public class EventDetailForm {
 
@@ -167,6 +170,30 @@ public class EventDetailForm {
 
     public void setOrganizer(User organizer) {
         this.organizer = organizer;
+    }
+
+    public static EventDetailForm mapToEventDetailForm(Event event) {
+        EventDetailForm eventDetailForm = new EventDetailForm();
+
+        eventDetailForm.setName(event.getName());
+        eventDetailForm.setEventImage(event.getEventImage());
+        eventDetailForm.setLatitude(event.getLatitude());
+        eventDetailForm.setLongitude(event.getLongitude());
+        eventDetailForm.setPlace(event.getPlace());
+        eventDetailForm.setPrice(event.getPrice());
+        eventDetailForm.setPrivateEvent(event.isPrivateEvent());
+        eventDetailForm.setOrganizer(event.getOrganizer());
+        eventDetailForm.setCategory(event.getCategories().get(0).getCategory());
+        eventDetailForm.setDescription(event.getDescription());
+        LocalDateTime startDateTime = LocalDateTime.ofInstant(event.getStartTime(), ZoneOffset.UTC);
+        eventDetailForm.setStartDate(startDateTime.toLocalDate());
+        eventDetailForm.setStartTime(startDateTime.toLocalTime());
+        LocalDateTime endDateTime = LocalDateTime.ofInstant(event.getEndTime(), ZoneOffset.UTC);
+        eventDetailForm.setEndDate(endDateTime.toLocalDate());
+        eventDetailForm.setEndTime(endDateTime.toLocalTime());
+        eventDetailForm.setOrganizer(event.getOrganizer());
+
+        return eventDetailForm;
     }
 }
 

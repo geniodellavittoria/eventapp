@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -72,9 +73,13 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
         super.onCreate(savedInstanceState);
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(CreateEventViewModel.class);
         dataBinding.setViewModel(viewModel);
+//        this.updateToolbarName(getString(R.string.new_event));
 
         viewModel.getCreationSuccess().observe(this, this::onCreateSuccess);
+        viewModel.getUpdatedEventName().observe(this, this::updateToolbarName);
+
         Toolbar toolbar = findViewById(R.id.toolbarDetail);
+        toolbar.setTitle(getString(R.string.new_event));
         setSupportActionBar(toolbar);
         pickStartTime = findViewById(R.id.editStartTime);
         pickStartTime.setOnClickListener(v -> {
@@ -156,6 +161,12 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
             mapFragment.getMapAsync(this);
         }
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+    }
+
+    private void updateToolbarName(String name) {
+        Toolbar toolbar = findViewById(R.id.toolbarDetail);
+        toolbar.setTitle(name);
+        setSupportActionBar(toolbar);
     }
 
     private void parseToInt(EditText editText) {

@@ -14,12 +14,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import ch.mobpro.eventapp.R;
 import ch.mobpro.eventapp.base.BaseActivity;
 import ch.mobpro.eventapp.databinding.ActivityDetailEventBinding;
+import ch.mobpro.eventapp.dto.EventDetailForm;
 import ch.mobpro.eventapp.model.Event;
 import ch.mobpro.eventapp.service.AuthInterceptor;
 import ch.mobpro.eventapp.viewmodel.EditEventViewModel;
@@ -35,9 +35,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import javax.inject.Inject;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.ZoneOffset;
 
 public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding> implements OnMapReadyCallback {
 
@@ -75,8 +73,12 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(EditEventViewModel.class);
         dataBinding.setViewModel(viewModel);
 
-        mapToViewModel(event);
+        updateToolbarName(event.getName());
+
+        viewModel.eventDetails = EventDetailForm.mapToEventDetailForm(event);
         viewModel.getUpdateSuccess().observe(this, this::onEditSuccess);
+        viewModel.getUpdatedEventName().observe(this, this::updateToolbarName);
+
         String currentUser = AuthInterceptor.getInstance().getUsername();
 
         if (viewModel.eventDetails.getOrganizer().getUsername().equals(currentUser))
@@ -184,25 +186,12 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
         mapFragment.getView().setEnabled(isOwner);
     }
 
-    private void mapToViewModel(Event event) {
-        viewModel.eventDetails.setName(event.getName());
-        viewModel.eventDetails.setEventImage(event.getEventImage());
-        viewModel.eventDetails.setLatitude(event.getLatitude());
-        viewModel.eventDetails.setLongitude(event.getLongitude());
-        viewModel.eventDetails.setPlace(event.getPlace());
-        viewModel.eventDetails.setPrice(event.getPrice());
-        viewModel.eventDetails.setPrivateEvent(event.isPrivateEvent());
-        viewModel.eventDetails.setOrganizer(event.getOrganizer());
-        viewModel.eventDetails.setCategory(event.getCategories().get(0).getCategory());
-        viewModel.eventDetails.setDescription(event.getDescription());
-        LocalDateTime startDateTime = LocalDateTime.ofInstant(event.getStartTime(), ZoneOffset.UTC);
-        viewModel.eventDetails.setStartDate(startDateTime.toLocalDate());
-        viewModel.eventDetails.setStartTime(startDateTime.toLocalTime());
-        LocalDateTime endDateTime = LocalDateTime.ofInstant(event.getEndTime(), ZoneOffset.UTC);
-        viewModel.eventDetails.setEndDate(endDateTime.toLocalDate());
-        viewModel.eventDetails.setEndTime(endDateTime.toLocalTime());
-        viewModel.eventDetails.setOrganizer(event.getOrganizer());
+    private void updateToolbarName(String name) {
+        Toolbar toolbar = findViewById(R.id.toolbarDetail);
+        toolbar.setTitle(name);
+        setSupportActionBar(toolbar);
     }
+
 
     private void parseToInt(EditText editText) {
         int placeInt = 0;

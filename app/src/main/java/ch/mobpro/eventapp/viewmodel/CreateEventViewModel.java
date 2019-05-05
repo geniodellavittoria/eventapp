@@ -1,5 +1,6 @@
 package ch.mobpro.eventapp.viewmodel;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.util.Log;
@@ -20,6 +21,7 @@ public class CreateEventViewModel extends ViewModel {
     private final EventService eventService;
 
     private MutableLiveData<Boolean> creationSuccess = new MutableLiveData<>();
+    private MutableLiveData<String> updateEventTitle = new MutableLiveData<>();
 
     private final EventRepository eventRepository;
 
@@ -52,5 +54,11 @@ public class CreateEventViewModel extends ViewModel {
         return creationSuccess;
     }
 
+    public void updateEventName(CharSequence name, int start, int before, int count) {
+        updateEventTitle.postValue(name.toString());
+    }
 
+    public LiveData<String> getUpdatedEventName() {
+        return updateEventTitle;
+    }
 }
