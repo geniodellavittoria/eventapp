@@ -40,7 +40,7 @@
         </activity>
         <activity
                 android:name=".activity.EventListActivity"
-                android:label="@string/title_activity_main"
+                android:label="@string/title_activity_events"
                 android:theme="@style/AppTheme.NoActionBar"
                 android:launchMode="singleTop">
             <intent-filter>
