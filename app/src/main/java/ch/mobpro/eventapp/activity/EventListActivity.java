@@ -1,7 +1,9 @@
 package ch.mobpro.eventapp.activity;
 
+import android.app.SearchManager;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -16,6 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.SearchView;
 import android.widget.TextView;
 import ch.mobpro.eventapp.R;
 import ch.mobpro.eventapp.adapter.CardListAdapter;
@@ -28,6 +31,7 @@ import ch.mobpro.eventapp.viewmodel.EventListViewModel;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EventListActivity extends BaseActivity<ActivityEventListBinding>
@@ -82,6 +86,7 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
             mRecView.setAdapter(cardListAdapter);
         });
         viewModel.loadEvents();
+        handleIntent(getIntent());
     }
 
     private void showCreateActivity() {
@@ -113,24 +118,60 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
     }
 
     @Override
+    protected void onNewIntent(Intent intent) {
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            List<Event> result = new ArrayList<>();
+            for (Event event : this.events) {
+                if (event.getName() != null && event.getName().toLowerCase().contains(query.toLowerCase())) {
+                    result.add(event);
+                }
+            }
+            if (!result.isEmpty()) {
+                this.events = result;
+            }
+            CardListAdapter cardListAdapter = new CardListAdapter(events, this);
+            mRecView.setAdapter(cardListAdapter);
+        }
+
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        MenuItem searchItem = menu.findItem(R.id.searchEventView);
+        searchItem.setOnActionExpandListener(new MenuItem.OnActionExpandListener() {
+            @Override
+            public boolean onMenuItemActionExpand(MenuItem item) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemActionCollapse(MenuItem item) {
+                viewModel.loadEvents();
+                SearchView searchView = (SearchView) item.getActionView();
+                searchView.setQuery("", false);
+                searchView.clearFocus();
+                return true;
+            }
+        });
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setIconifiedByDefault(false);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

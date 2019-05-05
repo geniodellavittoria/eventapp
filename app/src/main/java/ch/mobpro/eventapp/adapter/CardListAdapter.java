@@ -65,7 +65,6 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.EventC
         @Override
         public void onClick(View v) {
             onEventListener.onEventClick(getAdapterPosition());
-
         }
     }
 
