@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -24,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 import ch.mobpro.eventapp.R;
 import ch.mobpro.eventapp.adapter.CardListAdapter;
 import ch.mobpro.eventapp.base.BaseActivity;
@@ -63,7 +65,7 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
     public SessionTokenRepository sessionTokenRepository;
     private boolean mLocationPermissionGranted;
     private FusedLocationProviderClient mFusedLocationProviderClient;
-    private Object mLastKnownLocation;
+    private Location mLastKnownLocation;
 
     @Override
     protected int layoutRes() {
@@ -82,6 +84,7 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(v -> showCreateActivity());
 
+        getLocationPermission();
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -99,8 +102,7 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
         mRecView.setLayoutManager(new LinearLayoutManager(this));
         viewModel.getEvents().observe(this, e -> {
             this.events = e;
-            CardListAdapter cardListAdapter = new CardListAdapter(events, this);
-            mRecView.setAdapter(cardListAdapter);
+            updateEventList(this.events);
         });
         viewModel.loadEvents();
         handleIntent(getIntent());
@@ -151,10 +153,14 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
             if (!result.isEmpty()) {
                 this.events = result;
             }
-            CardListAdapter cardListAdapter = new CardListAdapter(events, this);
-            mRecView.setAdapter(cardListAdapter);
+            updateEventList(this.events);
         }
 
+    }
+
+    private void updateEventList(List<Event> events) {
+        CardListAdapter cardListAdapter = new CardListAdapter(events, this);
+        mRecView.setAdapter(cardListAdapter);
     }
 
     @Override
@@ -204,22 +210,24 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
                     @Override
                     public void onComplete(@NonNull Task task) {
                         if (task.isSuccessful()) {
-                            mLastKnownLocation = task.getResult();
+                            mLastKnownLocation = (Location) task.getResult();
+                            LatLng mLastKnownLatLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
                             Comparator<Event> comp = (o1, o2) -> {
                                 LatLng loc1 = new LatLng(o1.getLatitude(), o1.getLongitude());
                                 LatLng loc2 = new LatLng(o2.getLatitude(), o2.getLongitude());
-                                int aDist = (int) SphericalUtil.computeDistanceBetween(loc1, (LatLng) mLastKnownLocation);
-                                int bDist = (int) SphericalUtil.computeDistanceBetween(loc2, (LatLng) mLastKnownLocation);
+                                int aDist = (int) SphericalUtil.computeDistanceBetween(loc1, mLastKnownLatLng);
+                                int bDist = (int) SphericalUtil.computeDistanceBetween(loc2, mLastKnownLatLng);
                                 return aDist - bDist;
                             };
                             events.sort(comp);
-                            Log.d(TAG, "onComplete: " + events);
+                            updateEventList(events);
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");
                             Log.e(TAG, "Exception: %s", task.getException());
                         }
                     }
                 });
+                Toast.makeText(this, "Sorted by Location(nearest)", Toast.LENGTH_LONG).show();
             }
 
         } catch (SecurityException e) {
@@ -236,10 +244,6 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
-    }
-
-    private void getDeviceLocation() {
-
     }
 
 

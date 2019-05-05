@@ -24,7 +24,7 @@
                             android:layout_height="wrap_content"
                             android:inputType="text"
                             android:hint="@string/eventName"
-                            android:onTextChanged="@{viewModel.updateEventName}"
+                            android:onTextChanged="@{viewModel::updateEventName}"
                             android:text="@={viewModel.eventDetails.name}" android:importantForAutofill="no"/>
                 </android.support.design.widget.TextInputLayout>
                 <Spinner
