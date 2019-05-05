@@ -129,4 +129,6 @@
     <string name="app_label">EventApp</string>
     <string name="search_hint">Search Event</string>
     <string name="search_title">Search</string>
+    <string name="action_filter">filter</string>
+    <string name="action_nearest">Nearest</string>
 </resources>

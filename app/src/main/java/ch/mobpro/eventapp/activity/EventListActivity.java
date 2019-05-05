@@ -172,7 +172,13 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
         if (id == R.id.action_settings) {
             return true;
         }
+        if (id == R.id.action_nearest) {
+            sortNearestEvent();
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void sortNearestEvent() {
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
