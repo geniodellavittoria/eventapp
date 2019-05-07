@@ -130,4 +130,5 @@
     <string name="search_hint">Search Event</string>
     <string name="search_title">Search</string>
     <string name="new_event">New Event</string>
+    <string name="action_nearest">nearest</string>
 </resources>

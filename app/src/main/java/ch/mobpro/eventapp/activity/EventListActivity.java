@@ -5,9 +5,14 @@ import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -20,23 +25,32 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 import ch.mobpro.eventapp.R;
 import ch.mobpro.eventapp.adapter.CardListAdapter;
 import ch.mobpro.eventapp.base.BaseActivity;
 import ch.mobpro.eventapp.databinding.ActivityEventListBinding;
 import ch.mobpro.eventapp.model.Event;
 import ch.mobpro.eventapp.repository.SessionTokenRepository;
-import ch.mobpro.eventapp.service.AuthInterceptor;
 import ch.mobpro.eventapp.viewmodel.EventListViewModel;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.maps.android.SphericalUtil;
 import org.jetbrains.annotations.NotNull;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.ToDoubleFunction;
 
 public class EventListActivity extends BaseActivity<ActivityEventListBinding>
         implements NavigationView.OnNavigationItemSelectedListener, CardListAdapter.OnEventListener {
 
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private String TAG = this.getClass().getSimpleName();
     public RecyclerView mRecView;
 
@@ -49,6 +63,9 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
 
     @Inject
     public SessionTokenRepository sessionTokenRepository;
+    private boolean mLocationPermissionGranted;
+    private FusedLocationProviderClient mFusedLocationProviderClient;
+    private Location mLastKnownLocation;
 
     @Override
     protected int layoutRes() {
@@ -67,6 +84,7 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(v -> showCreateActivity());
 
+        getLocationPermission();
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -78,12 +96,13 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
         setSetUserInformationOnNavigationView(navigationView);
         navigationView.setNavigationItemSelectedListener(this);
 
+        mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+
         mRecView = findViewById(R.id.event_recycler_view);
         mRecView.setLayoutManager(new LinearLayoutManager(this));
         viewModel.getEvents().observe(this, e -> {
             this.events = e;
-            CardListAdapter cardListAdapter = new CardListAdapter(events, this);
-            mRecView.setAdapter(cardListAdapter);
+            updateEventList(this.events);
         });
         viewModel.loadEvents();
         handleIntent(getIntent());
@@ -134,10 +153,14 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
             if (!result.isEmpty()) {
                 this.events = result;
             }
-            CardListAdapter cardListAdapter = new CardListAdapter(events, this);
-            mRecView.setAdapter(cardListAdapter);
+            updateEventList(this.events);
         }
 
+    }
+
+    private void updateEventList(List<Event> events) {
+        CardListAdapter cardListAdapter = new CardListAdapter(events, this);
+        mRecView.setAdapter(cardListAdapter);
     }
 
     @Override
@@ -173,7 +196,54 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
             startActivity(new Intent(this, SettingsActivity.class));
             return true;
         }
+        if (id == R.id.action_nearest) {
+            sortNearestEvent();
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void sortNearestEvent() {
+        try {
+            if (mLocationPermissionGranted) {
+                Task locationResult = mFusedLocationProviderClient.getLastLocation();
+                locationResult.addOnCompleteListener(this, new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        if (task.isSuccessful()) {
+                            mLastKnownLocation = (Location) task.getResult();
+                            LatLng mLastKnownLatLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                            Comparator<Event> comp = (o1, o2) -> {
+                                LatLng loc1 = new LatLng(o1.getLatitude(), o1.getLongitude());
+                                LatLng loc2 = new LatLng(o2.getLatitude(), o2.getLongitude());
+                                int aDist = (int) SphericalUtil.computeDistanceBetween(loc1, mLastKnownLatLng);
+                                int bDist = (int) SphericalUtil.computeDistanceBetween(loc2, mLastKnownLatLng);
+                                return aDist - bDist;
+                            };
+                            events.sort(comp);
+                            updateEventList(events);
+                        } else {
+                            Log.d(TAG, "Current location is null. Using defaults.");
+                            Log.e(TAG, "Exception: %s", task.getException());
+                        }
+                    }
+                });
+                Toast.makeText(this, "Sorted by Location(nearest)", Toast.LENGTH_LONG).show();
+            }
+
+        } catch (SecurityException e) {
+            Log.e("Exception: %s", e.getMessage());
+        }
+
+    }
+
+    private void getLocationPermission() {
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            mLocationPermissionGranted = true;
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
     }
 
     @Override
