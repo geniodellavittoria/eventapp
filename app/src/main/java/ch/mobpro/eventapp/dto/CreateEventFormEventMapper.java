@@ -13,6 +13,7 @@ public class CreateEventFormEventMapper {
     private final ArrayList<String> categories = new ArrayList<>();
 
     public CreateEventFormEventMapper(EventDetailForm createEventForm) {
+        this.event.setId(createEventForm.getId());
         this.event.setName(createEventForm.getName());
         Instant startTime = mapToInstant(createEventForm.getStartTime(), createEventForm.getStartDate());
         Instant endTime = mapToInstant(createEventForm.getEndTime(), createEventForm.getEndDate());

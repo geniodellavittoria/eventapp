@@ -10,6 +10,8 @@ import java.time.ZoneOffset;
 
 public class EventDetailForm {
 
+    private String id;
+
     private String name;
 
     private LocalDate startDate;
@@ -36,13 +38,14 @@ public class EventDetailForm {
 
     private String category;
 
-    private User organizer;
+    private String username;
 
     public EventDetailForm() {
     }
 
-    public EventDetailForm(String name, LocalTime startTime, LocalDate startDate, LocalTime endTime, LocalDate endDate, int place, double price,
-                           String eventImage, String description, double longitude, double latitude, boolean privateEvent, String category, User organizer) {
+    public EventDetailForm(String id, String name, LocalTime startTime, LocalDate startDate, LocalTime endTime, LocalDate endDate, int place, double price,
+                           String eventImage, String description, double longitude, double latitude, boolean privateEvent, String category, String username) {
+        this.id = id;
         this.name = name;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -56,7 +59,7 @@ public class EventDetailForm {
         this.latitude = latitude;
         this.privateEvent = privateEvent;
         this.category = category;
-        this.organizer = organizer;
+        this.username = username;
     }
 
 
@@ -164,17 +167,10 @@ public class EventDetailForm {
         this.category = category;
     }
 
-    public User getOrganizer() {
-        return organizer;
-    }
-
-    public void setOrganizer(User organizer) {
-        this.organizer = organizer;
-    }
-
     public static EventDetailForm mapToEventDetailForm(Event event) {
         EventDetailForm eventDetailForm = new EventDetailForm();
 
+        eventDetailForm.setId(event.getId());
         eventDetailForm.setName(event.getName());
         eventDetailForm.setEventImage(event.getEventImage());
         eventDetailForm.setLatitude(event.getLatitude());
@@ -182,7 +178,6 @@ public class EventDetailForm {
         eventDetailForm.setPlace(event.getPlace());
         eventDetailForm.setPrice(event.getPrice());
         eventDetailForm.setPrivateEvent(event.isPrivateEvent());
-        eventDetailForm.setOrganizer(event.getOrganizer());
         eventDetailForm.setCategory(event.getCategories().get(0).getCategory());
         eventDetailForm.setDescription(event.getDescription());
         LocalDateTime startDateTime = LocalDateTime.ofInstant(event.getStartTime(), ZoneOffset.UTC);
@@ -191,9 +186,25 @@ public class EventDetailForm {
         LocalDateTime endDateTime = LocalDateTime.ofInstant(event.getEndTime(), ZoneOffset.UTC);
         eventDetailForm.setEndDate(endDateTime.toLocalDate());
         eventDetailForm.setEndTime(endDateTime.toLocalTime());
-        eventDetailForm.setOrganizer(event.getOrganizer());
+        eventDetailForm.setUsername(event.getUsername());
 
         return eventDetailForm;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }
 

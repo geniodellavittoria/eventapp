@@ -5,7 +5,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.util.Log;
 import ch.mobpro.eventapp.dto.CreateEventFormEventMapper;
-import ch.mobpro.eventapp.dto.EventDetailForm;
+import ch.mobpro.eventapp.model.Event;
 import ch.mobpro.eventapp.repository.EventRepository;
 import ch.mobpro.eventapp.service.EventService;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -13,28 +13,38 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
 import javax.inject.Inject;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneOffset;
 
 public class EditEventViewModel extends ViewModel {
 
-    private final EventRepository eventRepository;
     private static final String TAG = EditEventViewModel.class.getSimpleName();
     private final EventService eventService;
     private final CompositeDisposable disposable;
 
-    public EventDetailForm eventDetails = new EventDetailForm();
+    public Event event;
+    private LocalDate startDate;
+    private LocalTime startTime;
+    private LocalDate endDate;
+    private LocalTime endTime;
+
+    private CreateEventFormEventMapper mapper;
+
     private MutableLiveData<Boolean> updateSuccess = new MutableLiveData<>();
     private MutableLiveData<String> updateEventTitle = new MutableLiveData<>();
 
     @Inject
-    public EditEventViewModel(EventRepository eventRepository, EventService eventService) {
+    public EditEventViewModel(EventService eventService) {
         this.eventService = eventService;
-        this.eventRepository = eventRepository;
         disposable = new CompositeDisposable();
     }
 
     public void editEvent() {
-        CreateEventFormEventMapper eventMapper = new CreateEventFormEventMapper(eventDetails);
-        disposable.add(eventService.updateEvent(eventMapper.event.getId(), eventMapper.event)
+        event.setStartTime(LocalDateTime.of(startDate, startTime).toInstant(ZoneOffset.UTC));
+        event.setEndTime(LocalDateTime.of(endDate, endTime).toInstant(ZoneOffset.UTC));
+        disposable.add(eventService.updateEvent(event.getId(), event)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(event -> {
@@ -56,5 +66,37 @@ public class EditEventViewModel extends ViewModel {
 
     public LiveData<String> getUpdatedEventName() {
         return updateEventTitle;
+    }
+
+    public LocalDate getStartDate() {
+        return this.startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public void setStartTime(LocalTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalTime getStartTime() {
+        return this.startTime;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public LocalDate getEndDate() {
+        return this.endDate;
+    }
+
+    public void setEndTime(LocalTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public LocalTime getEndTime() {
+        return this.endTime;
     }
 }

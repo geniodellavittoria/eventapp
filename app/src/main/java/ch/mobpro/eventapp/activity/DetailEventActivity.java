@@ -21,6 +21,7 @@ import ch.mobpro.eventapp.base.BaseActivity;
 import ch.mobpro.eventapp.databinding.ActivityDetailEventBinding;
 import ch.mobpro.eventapp.dto.EventDetailForm;
 import ch.mobpro.eventapp.model.Event;
+import ch.mobpro.eventapp.model.EventCategory;
 import ch.mobpro.eventapp.service.AuthInterceptor;
 import ch.mobpro.eventapp.viewmodel.EditEventViewModel;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -32,10 +33,17 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import javax.inject.Inject;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding> implements OnMapReadyCallback {
 
@@ -72,16 +80,22 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
         Event event = (Event) getIntent().getSerializableExtra("event");
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(EditEventViewModel.class);
         dataBinding.setViewModel(viewModel);
+        viewModel.event = event;
 
         updateToolbarName(event.getName());
 
-        viewModel.eventDetails = EventDetailForm.mapToEventDetailForm(event);
+        LocalDateTime startDateTime = LocalDateTime.ofInstant(event.getStartTime(), ZoneOffset.UTC);
+        viewModel.setStartDate(startDateTime.toLocalDate());
+        viewModel.setStartTime(startDateTime.toLocalTime());
+        LocalDateTime endDateTime = LocalDateTime.ofInstant(event.getEndTime(), ZoneOffset.UTC);
+        viewModel.setEndDate(endDateTime.toLocalDate());
+        viewModel.setEndTime(endDateTime.toLocalTime());
         viewModel.getUpdateSuccess().observe(this, this::onEditSuccess);
         viewModel.getUpdatedEventName().observe(this, this::updateToolbarName);
 
         String currentUser = AuthInterceptor.getInstance().getUsername();
 
-        if (viewModel.eventDetails.getOrganizer().getUsername().equals(currentUser))
+        if (viewModel.event.getUsername() != null && viewModel.event.getUsername().equals(currentUser))
             this.isOwner = true;
         Toolbar toolbar = findViewById(R.id.toolbarDetail);
         setSupportActionBar(toolbar);
@@ -94,13 +108,13 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
         editTextName.setEnabled(isOwner);
         pickStartTime = findViewById(R.id.editStartTime);
         pickStartTime.setEnabled(isOwner);
-        int hour = viewModel.eventDetails.getStartTime().getHour();
-        int minute = viewModel.eventDetails.getStartTime().getMinute();
+        int hour = viewModel.getStartTime().getHour();
+        int minute = viewModel.getStartTime().getMinute();
         pickStartTime.setText(String.format("%d:%d", hour, minute));
         pickStartTime.setOnClickListener(v -> {
             timePickerDialog = new TimePickerDialog(DetailEventActivity.this, (view, hour1, minute1) -> {
                 LocalTime time = LocalTime.of(hour1, minute1);
-                viewModel.eventDetails.setStartTime(time);
+                viewModel.setStartTime(time);
                 pickStartTime.setText(hour1 + ":" + minute1);
             }, hour, minute, true);
             timePickerDialog.show();
@@ -108,43 +122,43 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
 
         pickStartDate = findViewById(R.id.editStartDate);
         pickStartDate.setEnabled(isOwner);
-        int day = viewModel.eventDetails.getStartDate().getDayOfMonth();
-        int month = viewModel.eventDetails.getStartDate().getMonthValue();
-        int year = viewModel.eventDetails.getStartDate().getYear();
+        int day = viewModel.getStartDate().getDayOfMonth();
+        int month = viewModel.getStartDate().getMonthValue();
+        int year = viewModel.getStartDate().getYear();
         pickStartDate.setText(String.format("%d.%d.%d", day, month, year));
         pickStartDate.setOnClickListener(v -> {
             datePickerDialog = new DatePickerDialog(DetailEventActivity.this, (view, y, m, d) -> {
                 m++;
                 LocalDate date = LocalDate.of(y, m, d);
-                viewModel.eventDetails.setStartDate(date);
+                viewModel.setStartDate(date);
                 pickStartDate.setText(String.format("%d.%d.%d", d, m, y));
             }, year, month, day);
             datePickerDialog.show();
         });
         pickEndTime = findViewById(R.id.editEndTime);
         pickEndTime.setEnabled(isOwner);
-        int hour_end = viewModel.eventDetails.getEndTime().getHour();
-        int minute_end = viewModel.eventDetails.getEndTime().getMinute();
+        int hour_end = viewModel.getEndTime().getHour();
+        int minute_end = viewModel.getEndTime().getMinute();
         pickEndTime.setText(String.format("%d:%d", hour_end, minute_end));
         pickEndTime.setOnClickListener(v -> {
             timePickerDialog = new TimePickerDialog(DetailEventActivity.this, (view, hour12, minute12) -> {
                 LocalTime time = LocalTime.of(hour12, minute12);
-                viewModel.eventDetails.setEndTime(time);
+                viewModel.setEndTime(time);
                 pickEndTime.setText(String.format("%d:%d", hour12, minute12));
             }, hour_end, minute_end, true);
             timePickerDialog.show();
         });
         pickEndDate = findViewById(R.id.editEndDate);
         pickEndDate.setEnabled(isOwner);
-        int day_end = viewModel.eventDetails.getEndDate().getDayOfMonth();
-        int month_end = viewModel.eventDetails.getEndDate().getMonthValue();
-        int year_end = viewModel.eventDetails.getEndDate().getYear();
+        int day_end = viewModel.getEndDate().getDayOfMonth();
+        int month_end = viewModel.getEndDate().getMonthValue();
+        int year_end = viewModel.getEndDate().getYear();
         pickEndDate.setText(String.format("%d.%d.%d", day_end, month_end, year_end));
         pickEndDate.setOnClickListener(v -> {
             datePickerDialog = new DatePickerDialog(DetailEventActivity.this, (view, y, m, d) -> {
                 m++;
                 LocalDate date = LocalDate.of(y, m, d);
-                viewModel.eventDetails.setEndDate(date);
+                viewModel.setEndDate(date);
                 pickEndDate.setText(String.format("%d.%d.%d", d, m, y));
             }, year_end, month_end, day_end);
             datePickerDialog.show();
@@ -154,13 +168,15 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
         categorySpinner.setEnabled(isOwner);
         String[] categories = getResources().getStringArray(R.array.eventCategories);
         for (int i = 0; i < categories.length; i++)
-            if (categories[i] == viewModel.eventDetails.getCategory())
+            if (categories[i] == viewModel.event.getCategories().get(0).getCategory())
                 categorySpinner.setSelection(i);
 
         categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                viewModel.eventDetails.setCategory(categories[position]);
+                ArrayList<EventCategory> selectedCategories = new ArrayList<>();
+                selectedCategories.add(new EventCategory(categories[position]));
+                viewModel.event.setCategories(selectedCategories);
             }
 
             @Override
@@ -171,7 +187,7 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
 
         EditText editText = findViewById(R.id.placePicker);
         editText.setEnabled(isOwner);
-        editText.setText(String.valueOf(viewModel.eventDetails.getPlace()));
+        editText.setText(String.valueOf(viewModel.event.getPlace()));
         editText.setOnFocusChangeListener((v, hasFocus) -> {
             if (!hasFocus) {
                 parseToInt(editText);
@@ -200,7 +216,7 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
         } catch (NumberFormatException ex) {
             Toast.makeText(this, "please enter a number", Toast.LENGTH_SHORT).show();
         }
-        viewModel.eventDetails.setPlace(placeInt);
+        viewModel.event.setPlace(placeInt);
     }
 
     private void onEditSuccess(boolean isSuccess) {
@@ -224,6 +240,7 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mLocationPermissionGranted = true;
+            updateLocationUI();
         } else {
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
@@ -232,9 +249,7 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         mLocationPermissionGranted = false;
         if (requestCode == PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {
             if (grantResults.length > 0
@@ -267,21 +282,24 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
     private void getDeviceLocation() {
         try {
             if (mLocationPermissionGranted) {
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                        new LatLng(viewModel.eventDetails.getLatitude(),
-                                viewModel.eventDetails.getLongitude()), DEFAULT_ZOOM));
-
-                marker = mMap.addMarker(new MarkerOptions().position(new LatLng(viewModel.eventDetails.getLatitude(), viewModel.eventDetails.getLongitude())));
-                mMap.setOnMapClickListener(latLng -> {
-                    if (isOwner) {
-                        Toast.makeText(DetailEventActivity.this, String.format("you tapped on lat:%.2f long:%.2f", latLng.latitude, latLng.longitude), Toast.LENGTH_SHORT).show();
-                        viewModel.eventDetails.setLatitude(latLng.latitude);
-                        viewModel.eventDetails.setLongitude(latLng.longitude);
-                        if (marker != null) {
-                            marker.remove();
+                Task locationResult = mFusedLocationProviderClient.getLastLocation();
+                locationResult.addOnCompleteListener(this, task -> {
+                    mLastKnownLocation = (Location) task.getResult();
+                    marker = mMap.addMarker(new MarkerOptions().position(new LatLng(viewModel.event.getLatitude(), viewModel.event.getLongitude())));
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                            new LatLng(mLastKnownLocation.getLatitude(),
+                                    mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                    mMap.setOnMapClickListener(latLng -> {
+                        if (isOwner) {
+                            Toast.makeText(DetailEventActivity.this, String.format("you tapped on lat:%.2f long:%.2f", latLng.latitude, latLng.longitude), Toast.LENGTH_SHORT).show();
+                            viewModel.event.setLatitude(latLng.latitude);
+                            viewModel.event.setLongitude(latLng.longitude);
+                            if (marker != null) {
+                                marker.remove();
+                            }
+                            marker = mMap.addMarker(new MarkerOptions().position(new LatLng(latLng.latitude, latLng.longitude)).title("your picked location"));
                         }
-                        marker = mMap.addMarker(new MarkerOptions().position(new LatLng(latLng.latitude, latLng.longitude)).title("your picked location"));
-                    }
+                    });
                 });
             }
         } catch (

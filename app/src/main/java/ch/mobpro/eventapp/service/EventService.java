@@ -17,13 +17,13 @@ public interface EventService {
     @POST(EVENT)
     Single<Event> createEvent(@Body Event event);
 
-    @PUT(EVENT + ID)
+    @PUT(EVENT + "/" + ID)
     Single<Void> updateEvent(@Path("id") String id, @Body Event event);
 
-    @DELETE(EVENT + ID)
+    @DELETE(EVENT + "/" + ID)
     Single<Void> deleteEvent(@Path("id") String id);
 
-    @GET(EVENT + ID)
+    @GET(EVENT + "/" + ID)
     Single<Event> getEvent(String id);
 
 

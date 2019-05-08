@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModel;
 import android.util.Log;
 import ch.mobpro.eventapp.dto.EventDetailForm;
 import ch.mobpro.eventapp.dto.CreateEventFormEventMapper;
+import ch.mobpro.eventapp.model.User;
 import ch.mobpro.eventapp.repository.EventRepository;
 import ch.mobpro.eventapp.service.AuthInterceptor;
 import ch.mobpro.eventapp.service.EventService;
@@ -14,6 +15,8 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
 import javax.inject.Inject;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class CreateEventViewModel extends ViewModel {
 
