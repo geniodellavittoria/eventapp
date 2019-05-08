@@ -47,6 +47,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import static ch.mobpro.eventapp.activity.IntentConstants.DELETE_EVENT_INTENT;
+import static ch.mobpro.eventapp.activity.IntentConstants.EDIT_EVENT_REQUEST_CODE;
+
 public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding> implements OnMapReadyCallback {
 
     private static final float DEFAULT_ZOOM = 12f;
@@ -94,6 +97,8 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
         viewModel.setEndTime(endDateTime.toLocalTime());
         viewModel.getUpdateSuccess().observe(this, this::onEditSuccess);
         viewModel.getUpdatedEventName().observe(this, this::updateToolbarName);
+        viewModel.getDeleteSuccess().observe(this, this::onDeleteEvent);
+        viewModel.getEventRegistrationSuccess().observe(this, this::onEventRegistration);
 
         String currentUser = AuthInterceptor.getInstance().getUsername();
 
@@ -204,6 +209,22 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
         mapFragment.getView().setEnabled(isOwner);
     }
 
+    private void onEventRegistration(Boolean isRegistrationSuccess) {
+        if (!isRegistrationSuccess) {
+            Toast.makeText(this, "Could not register for event", Toast.LENGTH_LONG).show();
+        } else {
+            finish();
+        }
+    }
+
+    private void onDeleteEvent(Boolean deleteEvent) {
+        if (!deleteEvent) {
+            Toast.makeText(this, "Could not delete event", Toast.LENGTH_LONG).show();
+        } else {
+            finish();
+        }
+    }
+
     private void updateToolbarName(String name) {
         Toolbar toolbar = findViewById(R.id.toolbarDetail);
         toolbar.setTitle(name);
@@ -212,17 +233,22 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.detail, menu);
-        MenuItem deleteItem = menu.findItem(R.id.action_delete);
+        if (isOwner()) {
+            getMenuInflater().inflate(R.menu.detail, menu);
+        } else {
+            getMenuInflater().inflate(R.menu.register, menu);
+        }
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        Log.d(TAG, "onOptionsItemSelected: " + id);
         if (id == R.id.action_delete) {
-            Log.d(TAG, "onOptionsItemSelected: ");
-            //TODO delete
+            viewModel.deleteEvent();
+        } else if (id == R.id.action_register) {
+            viewModel.registerEvent();
         }
         return super.onOptionsItemSelected(item);
     }

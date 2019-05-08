@@ -47,6 +47,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.ToDoubleFunction;
 
+import static ch.mobpro.eventapp.activity.IntentConstants.EDIT_EVENT_REQUEST_CODE;
+
 public class EventListActivity extends BaseActivity<ActivityEventListBinding>
         implements NavigationView.OnNavigationItemSelectedListener, CardListAdapter.OnEventListener {
 
@@ -106,6 +108,12 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
         });
         viewModel.loadEvents();
         handleIntent(getIntent());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
     }
 
     private void showCreateActivity() {

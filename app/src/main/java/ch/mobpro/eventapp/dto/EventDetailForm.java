@@ -62,6 +62,13 @@ public class EventDetailForm {
         this.username = username;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -189,14 +196,6 @@ public class EventDetailForm {
         eventDetailForm.setUsername(event.getUsername());
 
         return eventDetailForm;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getUsername() {

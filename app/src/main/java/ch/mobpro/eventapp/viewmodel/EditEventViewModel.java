@@ -5,8 +5,13 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.util.Log;
 import ch.mobpro.eventapp.dto.CreateEventFormEventMapper;
+import ch.mobpro.eventapp.dto.EventDetailForm;
+import ch.mobpro.eventapp.dto.EventRegistrationForm;
+import ch.mobpro.eventapp.model.EventRegistrationCategory;
 import ch.mobpro.eventapp.model.Event;
 import ch.mobpro.eventapp.repository.EventRepository;
+import ch.mobpro.eventapp.repository.SessionTokenRepository;
+import ch.mobpro.eventapp.service.EventRegistrationService;
 import ch.mobpro.eventapp.service.EventService;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -23,6 +28,8 @@ public class EditEventViewModel extends ViewModel {
     private static final String TAG = EditEventViewModel.class.getSimpleName();
     private final EventService eventService;
     private final CompositeDisposable disposable;
+    private final SessionTokenRepository sessionTokenRepository;
+    private final EventRegistrationService eventRegistrationService;
 
     public Event event;
     private LocalDate startDate;
@@ -34,10 +41,16 @@ public class EditEventViewModel extends ViewModel {
 
     private MutableLiveData<Boolean> updateSuccess = new MutableLiveData<>();
     private MutableLiveData<String> updateEventTitle = new MutableLiveData<>();
+    private MutableLiveData<Boolean> deleteSuccess = new MutableLiveData<>();
+    private MutableLiveData<Boolean> eventRegistrationSuccess = new MutableLiveData<>();
 
     @Inject
-    public EditEventViewModel(EventService eventService) {
+    public EditEventViewModel(EventService eventService,
+                              EventRegistrationService eventRegistrationService,
+                              SessionTokenRepository sessionTokenRepository) {
         this.eventService = eventService;
+        this.eventRegistrationService = eventRegistrationService;
+        this.sessionTokenRepository = sessionTokenRepository;
         disposable = new CompositeDisposable();
     }
 
@@ -54,6 +67,34 @@ public class EditEventViewModel extends ViewModel {
                     Log.e(TAG, "Error occurred", throwable);
                 }));
 
+    }
+
+    public void deleteEvent() {
+        disposable.add(eventService.deleteEvent(event.getId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(res -> {
+                    deleteSuccess.postValue(true);
+                }, throwable -> {
+                    deleteSuccess.postValue(false);
+                    Log.e(TAG, "Error occurred", throwable);
+                }));
+    }
+
+    public void registerEvent() {
+        EventRegistrationForm eventRegistrationForm = new EventRegistrationForm();
+        eventRegistrationForm.setUsername(sessionTokenRepository.getUsername());
+        eventRegistrationForm.setPaidPrice(event.getPrice());
+
+        disposable.add(eventRegistrationService.createEventRegistration(event.getId(), eventRegistrationForm)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(res -> {
+                    eventRegistrationSuccess.postValue(true);
+                }, throwable -> {
+                    eventRegistrationSuccess.postValue(false);
+                    Log.e(TAG, "Error occurred", throwable);
+                }));
     }
 
     public void updateEventName(CharSequence name, int start, int before, int count) {
@@ -98,5 +139,13 @@ public class EditEventViewModel extends ViewModel {
 
     public LocalTime getEndTime() {
         return this.endTime;
+    }
+
+    public MutableLiveData<Boolean> getDeleteSuccess() {
+        return deleteSuccess;
+    }
+
+    public MutableLiveData<Boolean> getEventRegistrationSuccess() {
+        return eventRegistrationSuccess;
     }
 }

@@ -40,6 +40,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Calendar;
 
+import static ch.mobpro.eventapp.activity.IntentConstants.EDIT_EVENT_REQUEST_CODE;
+
 public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding> implements OnMapReadyCallback {
 
     private static final float DEFAULT_ZOOM = 12f;
@@ -183,8 +185,7 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
         if (!isSuccess) {
             Toast.makeText(this, "Could not create  event", Toast.LENGTH_LONG).show();
         } else {
-            Intent intent = new Intent(this, EventListActivity.class);
-            startActivity(intent);
+            finish();
         }
     }
 
