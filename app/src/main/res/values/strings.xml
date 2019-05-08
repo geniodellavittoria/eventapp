@@ -131,4 +131,5 @@
     <string name="search_title">Search</string>
     <string name="new_event">New Event</string>
     <string name="action_nearest">nearest</string>
+    <string name="action_delete">delete</string>
 </resources>

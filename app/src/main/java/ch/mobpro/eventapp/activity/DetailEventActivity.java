@@ -14,6 +14,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import ch.mobpro.eventapp.R;
@@ -208,6 +210,22 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
         setSupportActionBar(toolbar);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.detail, menu);
+        MenuItem deleteItem = menu.findItem(R.id.action_delete);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_delete) {
+            Log.d(TAG, "onOptionsItemSelected: ");
+            //TODO delete
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     private void parseToInt(EditText editText) {
         int placeInt = 0;
