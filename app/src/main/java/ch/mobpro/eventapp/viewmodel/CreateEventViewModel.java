@@ -26,15 +26,12 @@ public class CreateEventViewModel extends ViewModel {
     private MutableLiveData<Boolean> creationSuccess = new MutableLiveData<>();
     private MutableLiveData<String> updateEventTitle = new MutableLiveData<>();
 
-    private final EventRepository eventRepository;
-
     private CompositeDisposable disposable;
     public EventDetailForm event = new EventDetailForm();
 
     @Inject
-    CreateEventViewModel(EventRepository eventRepository, EventService eventService) {
+    CreateEventViewModel(EventService eventService) {
         this.eventService = eventService;
-        this.eventRepository = eventRepository;
         disposable = new CompositeDisposable();
     }
 
