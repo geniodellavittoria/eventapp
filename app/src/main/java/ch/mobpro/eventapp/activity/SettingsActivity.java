@@ -35,7 +35,6 @@ import java.util.List;
 public class SettingsActivity extends AppCompatActivity {
 
     private final String deviceLocation = "deviceLocation";
-    private FragmentManager mFragmentManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,41 +45,26 @@ public class SettingsActivity extends AppCompatActivity {
         mActionBarToolbar.setTitle(R.string.title_activity_settings);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        preferences.registerOnSharedPreferenceChangeListener(((sharedPreferences, key) -> {
-            if (deviceLocation.equals(key)) {
-                boolean deviceLocationValue = preferences.getBoolean(deviceLocation, false);
-                if (deviceLocationValue) {
-                    SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                            .findFragmentById(R.id.map);
-                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                    ft.remove(mapFragment);
-                    Fragment newInstance = recreateFragment(mapFragment);
-                    ft.add(R.id.map, newInstance);
-                    ft.commit();
-                } else {
-                    SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                            .findFragmentById(R.id.map);
+        preferences.registerOnSharedPreferenceChangeListener(this::toggleMapFragment);
+    }
+
+    private void toggleMapFragment(SharedPreferences preferences, String key) {
+        if (deviceLocation.equals(key)) {
+            boolean deviceLocationValue = preferences.getBoolean(deviceLocation, false);
+            if (deviceLocationValue) {
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.add(R.id.map, new SupportMapFragment());
+                ft.commit();
+            } else {
+                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                        .findFragmentById(R.id.map);
+                if (mapFragment != null) {
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                     ft.remove(mapFragment);
                     ft.commit();
                 }
             }
-        }));
-    }
-
-    private Fragment recreateFragment(Fragment f)
-    {
-        try {
-            Fragment.SavedState savedState = getSupportFragmentManager().saveFragmentInstanceState(f);
-
-            Fragment newInstance = f.getClass().newInstance();
-            newInstance.setInitialSavedState(savedState);
-
-            return newInstance;
-        }
-        catch (Exception e) // InstantiationException, IllegalAccessException
-        {
-            throw new RuntimeException("Cannot reinstantiate fragment " + f.getClass().getName(), e);
         }
     }
+
 }
