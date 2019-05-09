@@ -40,7 +40,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Calendar;
 
-import static ch.mobpro.eventapp.activity.IntentConstants.EDIT_EVENT_REQUEST_CODE;
 
 public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding> implements OnMapReadyCallback {
 

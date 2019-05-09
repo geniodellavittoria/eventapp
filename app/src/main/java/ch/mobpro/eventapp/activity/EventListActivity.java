@@ -47,8 +47,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.ToDoubleFunction;
 
-import static ch.mobpro.eventapp.activity.IntentConstants.EDIT_EVENT_REQUEST_CODE;
-
 public class EventListActivity extends BaseActivity<ActivityEventListBinding>
         implements NavigationView.OnNavigationItemSelectedListener, CardListAdapter.OnEventListener {
 
@@ -101,12 +99,12 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
 
         mRecView = findViewById(R.id.event_recycler_view);
-        mRecView.setLayoutManager(new LinearLayoutManager(this));
+        viewModel.loadEvents();
         viewModel.getEvents().observe(this, e -> {
             this.events = e;
             updateEventList(this.events);
+            mRecView.setLayoutManager(new LinearLayoutManager(this));
         });
-        viewModel.loadEvents();
         handleIntent(getIntent());
     }
 

@@ -48,7 +48,6 @@ import java.util.List;
 import java.util.Locale;
 
 import static ch.mobpro.eventapp.activity.IntentConstants.DELETE_EVENT_INTENT;
-import static ch.mobpro.eventapp.activity.IntentConstants.EDIT_EVENT_REQUEST_CODE;
 
 public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding> implements OnMapReadyCallback {
 
