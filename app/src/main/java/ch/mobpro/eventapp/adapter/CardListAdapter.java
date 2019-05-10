@@ -1,7 +1,10 @@
 package ch.mobpro.eventapp.adapter;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -91,6 +94,9 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.EventC
     public void onBindViewHolder(@NotNull EventCardViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
+        if (events.get(position).getEventImage() != null) {
+            holder.eventImage.setImageBitmap(getEventImage(events.get(position).getEventImage()));
+        }
         holder.eventNameText.setText(events.get(position).getName());
         if (!events.get(position).getCategories().isEmpty()) {
             holder.eventCategoryText.setText(events.get(position).getCategories().get(0).getCategory());
@@ -111,6 +117,14 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.EventC
 
     public interface OnEventListener {
         void onEventClick(int position);
+    }
+
+    public Bitmap getEventImage(String imageContent) {
+        if (imageContent != null) {
+            byte[] decodedString = Base64.decode(imageContent, Base64.DEFAULT);
+            return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        }
+        return null;
     }
 
 

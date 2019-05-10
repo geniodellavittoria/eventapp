@@ -3,25 +3,28 @@ package ch.mobpro.eventapp.viewmodel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 import ch.mobpro.eventapp.dto.CreateEventFormEventMapper;
-import ch.mobpro.eventapp.dto.EventDetailForm;
 import ch.mobpro.eventapp.dto.EventRegistrationForm;
-import ch.mobpro.eventapp.model.EventRegistrationCategory;
 import ch.mobpro.eventapp.model.Event;
-import ch.mobpro.eventapp.repository.EventRepository;
 import ch.mobpro.eventapp.repository.SessionTokenRepository;
 import ch.mobpro.eventapp.service.EventRegistrationService;
 import ch.mobpro.eventapp.service.EventService;
+import com.google.android.gms.common.util.IOUtils;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
 import javax.inject.Inject;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneOffset;
+import java.util.Base64;
 
 public class EditEventViewModel extends ViewModel {
 
@@ -43,6 +46,7 @@ public class EditEventViewModel extends ViewModel {
     private MutableLiveData<String> updateEventTitle = new MutableLiveData<>();
     private MutableLiveData<Boolean> deleteSuccess = new MutableLiveData<>();
     private MutableLiveData<Boolean> eventRegistrationSuccess = new MutableLiveData<>();
+    private MutableLiveData<Boolean> onEventImageSelected = new MutableLiveData<>();
 
     @Inject
     public EditEventViewModel(EventService eventService,
@@ -101,6 +105,10 @@ public class EditEventViewModel extends ViewModel {
         updateEventTitle.postValue(name.toString());
     }
 
+    public void chooseEventImage() {
+        onEventImageSelected.postValue(true);
+    }
+
     public MutableLiveData<Boolean> getUpdateSuccess() {
         return updateSuccess;
     }
@@ -147,5 +155,17 @@ public class EditEventViewModel extends ViewModel {
 
     public MutableLiveData<Boolean> getEventRegistrationSuccess() {
         return eventRegistrationSuccess;
+    }
+
+    public MutableLiveData<Boolean> getOnEventImageSelected() {
+        return onEventImageSelected;
+    }
+
+    public void storeEventImage(InputStream dataStream) throws IOException {
+        byte[] bytes = IOUtils.toByteArray(dataStream);
+        String encoded = Base64.getEncoder().encodeToString(bytes);
+        if (encoded != null) {
+            event.setEventImage(encoded);
+        }
     }
 }

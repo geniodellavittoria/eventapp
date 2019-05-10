@@ -1,155 +1,181 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:tools="http://schemas.android.com/tools"
+        xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable name="viewModel" type="ch.mobpro.eventapp.viewmodel.EditEventViewModel"/>
     </data>
-    <android.support.constraint.ConstraintLayout android:layout_width="match_parent"
-                                                 android:layout_height="match_parent">
-        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                      android:orientation="vertical" app:layout_constraintTop_toTopOf="parent">
-            <include
-                    layout="@layout/app_bar_detail"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                          android:orientation="horizontal">
-                <android.support.design.widget.TextInputLayout
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:layout_weight="1">
-                    <EditText
-                            android:id="@+id/editTextName"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="text"
-                            android:hint="@string/eventName"
-                            android:onTextChanged="@{viewModel::updateEventName}"
-                            android:text="@={viewModel.event.name}" android:importantForAutofill="no"/>
-                </android.support.design.widget.TextInputLayout>
-                <Spinner
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/eventCategorySpinner"
-                        android:layout_margin="10dp"
-                        android:entries="@array/eventCategories"
-                        android:layout_marginStart="0dp"
-                        android:padding="0dp"
-                        android:layout_weight="2"/>
-            </LinearLayout>
+    <android.support.design.widget.CoordinatorLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true">
 
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:text="@string/event_from"/>
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                          android:orientation="horizontal" android:baselineAligned="false">
-                <android.support.design.widget.TextInputLayout
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:layout_weight="1">
-
-                    <EditText
-                            android:inputType="time"
-                            android:focusable="false"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:id="@+id/editStartTime"
-                            android:hint="@string/pick_start_time" android:importantForAutofill="no"/>
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:layout_weight="1">
-                    <EditText
-                            android:inputType="date"
-                            android:focusable="false"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:hint="@string/pick_start_date"
-                            android:id="@+id/editStartDate" android:importantForAutofill="no"/>
-                </android.support.design.widget.TextInputLayout>
-            </LinearLayout>
-
-
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                      android:text="@string/event_to"/>
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
-                          android:orientation="horizontal" android:baselineAligned="false">
-                <android.support.design.widget.TextInputLayout
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:layout_weight="1">
-                    <EditText
-                            android:inputType="time"
-                            android:focusable="false"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/pick_end_time"
-                            android:id="@+id/editEndTime" android:importantForAutofill="no"/>
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:layout_weight="1">
-                    <EditText
-                            android:inputType="date"
-                            android:focusable="false"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/pick_end_date"
-                            android:id="@+id/editEndDate" android:importantForAutofill="no"/>
-                </android.support.design.widget.TextInputLayout>
-            </LinearLayout>
-
-            <android.support.design.widget.TextInputLayout
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent">
-                <EditText
-                        android:id="@+id/editTextDescription"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="text"
-                        android:hint="@string/eventDescription"
-                        android:text="@={viewModel.event.description}" android:importantForAutofill="no"/>
-            </android.support.design.widget.TextInputLayout>
-
-            <CheckBox
-                    android:id="@+id/checkBoxIsPrivate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/eventIsPrivateEvent"
-                    android:checked="@={viewModel.event.privateEvent}"/>
-            <Button
-                    android:id="@+id/imageBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/eventImage"/>
-
-            <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                <EditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/placePicker"
-                        android:hint="@string/placePickerHint"
-                        android:inputType="numberDecimal" android:importantForAutofill="no"/>
-            </android.support.design.widget.TextInputLayout>
-
-            <fragment
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/map"
-                    android:name="com.google.android.gms.maps.SupportMapFragment"/>
-        </LinearLayout>
-        <Button
-                android:text="@string/save"
+        <include
+                layout="@layout/app_bar_detail"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/btnSave"
-                android:onClick="@{() -> viewModel.editEvent()}"
-                app:layout_constraintBottom_toBottomOf="parent"/>
-    </android.support.constraint.ConstraintLayout>
+                android:layout_height="wrap_content"/>
+
+        <android.support.v4.widget.NestedScrollView
+                android:id="@+id/scroll"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:clipToPadding="false"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" android:layout_marginTop="16dp">
+
+            <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+            >
+                <android.support.constraint.ConstraintLayout android:layout_width="match_parent"
+                                                             android:layout_height="wrap_content">
+                    <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintTop_toTopOf="parent">
+                        <LinearLayout android:layout_width="match_parent"
+                                      android:layout_height="wrap_content"
+                                      android:orientation="horizontal"
+                        >
+                            <android.support.design.widget.TextInputLayout
+                                    android:layout_height="wrap_content"
+                                    android:layout_width="match_parent"
+                                    android:layout_weight="1">
+                                <EditText
+                                        android:id="@+id/editTextName"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:inputType="text"
+                                        android:hint="@string/eventName"
+                                        android:onTextChanged="@{viewModel::updateEventName}"
+                                        android:text="@={viewModel.event.name}" android:importantForAutofill="no"/>
+                            </android.support.design.widget.TextInputLayout>
+                            <Spinner
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/eventCategorySpinner"
+                                    android:layout_margin="10dp"
+                                    android:entries="@array/eventCategories"
+                                    android:layout_marginStart="0dp"
+                                    android:padding="0dp"
+                                    android:layout_weight="2"/>
+                        </LinearLayout>
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                  android:text="@string/event_from"/>
+                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                                      android:orientation="horizontal" android:baselineAligned="false">
+                            <android.support.design.widget.TextInputLayout
+                                    android:layout_height="wrap_content"
+                                    android:layout_width="match_parent"
+                                    android:layout_weight="1">
+
+                                <EditText
+                                        android:inputType="time"
+                                        android:focusable="false"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:id="@+id/editStartTime"
+                                        android:hint="@string/pick_start_time" android:importantForAutofill="no"/>
+                            </android.support.design.widget.TextInputLayout>
+
+                            <android.support.design.widget.TextInputLayout
+                                    android:layout_height="wrap_content"
+                                    android:layout_width="match_parent"
+                                    android:layout_weight="1">
+                                <EditText
+                                        android:inputType="date"
+                                        android:focusable="false"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:hint="@string/pick_start_date"
+                                        android:id="@+id/editStartDate" android:importantForAutofill="no"/>
+                            </android.support.design.widget.TextInputLayout>
+                        </LinearLayout>
+
+
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                                  android:text="@string/event_to"/>
+                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+                                      android:orientation="horizontal" android:baselineAligned="false">
+                            <android.support.design.widget.TextInputLayout
+                                    android:layout_height="wrap_content"
+                                    android:layout_width="match_parent"
+                                    android:layout_weight="1">
+                                <EditText
+                                        android:inputType="time"
+                                        android:focusable="false"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="@string/pick_end_time"
+                                        android:id="@+id/editEndTime" android:importantForAutofill="no"/>
+                            </android.support.design.widget.TextInputLayout>
+
+                            <android.support.design.widget.TextInputLayout
+                                    android:layout_height="wrap_content"
+                                    android:layout_width="match_parent"
+                                    android:layout_weight="1">
+                                <EditText
+                                        android:inputType="date"
+                                        android:focusable="false"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:hint="@string/pick_end_date"
+                                        android:id="@+id/editEndDate" android:importantForAutofill="no"/>
+                            </android.support.design.widget.TextInputLayout>
+                        </LinearLayout>
+
+                        <android.support.design.widget.TextInputLayout
+                                android:layout_height="wrap_content"
+                                android:layout_width="match_parent">
+                            <EditText
+                                    android:id="@+id/editTextDescription"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:inputType="text"
+                                    android:hint="@string/eventDescription"
+                                    android:text="@={viewModel.event.description}" android:importantForAutofill="no"/>
+                        </android.support.design.widget.TextInputLayout>
+
+                        <CheckBox
+                                android:id="@+id/checkBoxIsPrivate"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/eventIsPrivateEvent"
+                                android:checked="@={viewModel.event.privateEvent}"/>
+                        <Button
+                                android:id="@+id/choose_event_image_button"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:onClick="@{() -> viewModel.chooseEventImage()}"
+                                android:text="@string/eventImage"/>
+
+                        <android.support.design.widget.TextInputLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                            <EditText
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:id="@+id/placePicker"
+                                    android:hint="@string/placePickerHint"
+                                    android:inputType="numberDecimal" android:importantForAutofill="no"/>
+                        </android.support.design.widget.TextInputLayout>
+
+                        <fragment
+                                android:layout_width="match_parent"
+                                android:layout_height="300dp"
+                                android:id="@+id/map"
+                                android:name="com.google.android.gms.maps.SupportMapFragment"/>
+                    </LinearLayout>
+                    <Button
+                            android:text="@string/save"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/btnSave"
+                            android:onClick="@{() -> viewModel.editEvent()}"
+                            app:layout_constraintBottom_toBottomOf="parent"/>
+                </android.support.constraint.ConstraintLayout>
+            </FrameLayout>
+        </android.support.v4.widget.NestedScrollView>
+    </android.support.design.widget.CoordinatorLayout>
 </layout>

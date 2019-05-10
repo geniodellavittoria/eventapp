@@ -35,6 +35,7 @@ import java.util.List;
 public class SettingsActivity extends AppCompatActivity {
 
     private final String deviceLocation = "deviceLocation";
+    private SharedPreferences.OnSharedPreferenceChangeListener listener;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,7 +46,8 @@ public class SettingsActivity extends AppCompatActivity {
         mActionBarToolbar.setTitle(R.string.title_activity_settings);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        preferences.registerOnSharedPreferenceChangeListener(this::toggleMapFragment);
+        listener = this::toggleMapFragment;
+        preferences.registerOnSharedPreferenceChangeListener(listener);
     }
 
     private void toggleMapFragment(SharedPreferences preferences, String key) {
@@ -59,9 +61,12 @@ public class SettingsActivity extends AppCompatActivity {
                 SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                         .findFragmentById(R.id.map);
                 if (mapFragment != null) {
-                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                    ft.remove(mapFragment);
-                    ft.commit();
+                    getSupportFragmentManager()
+                            .beginTransaction()
+                            .replace(R.id.map, mapFragment, null)
+//                            .remove(mapFragment)
+                            .addToBackStack(null)
+                            .commit();
                 }
             }
         }
