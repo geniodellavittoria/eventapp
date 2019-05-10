@@ -26,6 +26,8 @@ import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.util.Base64;
 
+import static ch.mobpro.eventapp.utils.Base64BitmapUtil.getBase64FromStream;
+
 public class EditEventViewModel extends ViewModel {
 
     private static final String TAG = EditEventViewModel.class.getSimpleName();
@@ -162,10 +164,6 @@ public class EditEventViewModel extends ViewModel {
     }
 
     public void storeEventImage(InputStream dataStream) throws IOException {
-        byte[] bytes = IOUtils.toByteArray(dataStream);
-        String encoded = Base64.getEncoder().encodeToString(bytes);
-        if (encoded != null) {
-            event.setEventImage(encoded);
-        }
+        event.setEventImage(getBase64FromStream(dataStream));
     }
 }

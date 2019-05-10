@@ -27,6 +27,8 @@ import java.time.format.FormatStyle;
 import java.util.List;
 import java.util.Locale;
 
+import static ch.mobpro.eventapp.utils.Base64BitmapUtil.getBitmapFromString;
+
 public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.EventCardViewHolder> {
 
     DateTimeFormatter formatter =
@@ -95,7 +97,7 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.EventC
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         if (events.get(position).getEventImage() != null) {
-            holder.eventImage.setImageBitmap(getEventImage(events.get(position).getEventImage()));
+            holder.eventImage.setImageBitmap(getBitmapFromString(events.get(position).getEventImage()));
         }
         holder.eventNameText.setText(events.get(position).getName());
         if (!events.get(position).getCategories().isEmpty()) {
@@ -117,14 +119,6 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.EventC
 
     public interface OnEventListener {
         void onEventClick(int position);
-    }
-
-    public Bitmap getEventImage(String imageContent) {
-        if (imageContent != null) {
-            byte[] decodedString = Base64.decode(imageContent, Base64.DEFAULT);
-            return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        }
-        return null;
     }
 
 

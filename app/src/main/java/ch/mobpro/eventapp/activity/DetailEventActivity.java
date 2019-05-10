@@ -51,6 +51,7 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 
 import static ch.mobpro.eventapp.activity.IntentConstants.PICK_IMAGE;
+import static ch.mobpro.eventapp.utils.Base64BitmapUtil.getBitmapFromString;
 
 public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding> implements OnMapReadyCallback {
 
@@ -93,6 +94,7 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
 
         updateToolbarName(event.getName());
 
+
         LocalDateTime startDateTime = LocalDateTime.ofInstant(event.getStartTime(), ZoneOffset.UTC);
         viewModel.setStartDate(startDateTime.toLocalDate());
         viewModel.setStartTime(startDateTime.toLocalTime());
@@ -112,6 +114,8 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
         mToolbar = findViewById(R.id.toolbarDetail);
         setSupportActionBar(mToolbar);
         mCollapsingToolbar = findViewById(R.id.collapse_toolbar);
+        ImageView imageView = findViewById(R.id.header);
+        imageView.setImageBitmap(getBitmapFromString(viewModel.event.getEventImage()));
 
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
                 R.drawable.event_default_image);
