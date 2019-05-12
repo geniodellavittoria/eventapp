@@ -3,6 +3,7 @@ package ch.mobpro.eventapp.service;
 import ch.mobpro.eventapp.model.Event;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
+import retrofit2.Response;
 import retrofit2.http.*;
 
 import java.util.List;
@@ -24,7 +25,7 @@ public interface EventService {
     Single<Event> updateEvent(@Path("id") String id, @Body Event event);
 
     @DELETE(EVENT + "/" + ID)
-    Maybe<Void> deleteEvent(@Path("id") String id);
+    Single<Response> deleteEvent(@Path("id") String id);
 
     @GET(EVENT + "/" + ID)
     Single<Event> getEvent(String id);
