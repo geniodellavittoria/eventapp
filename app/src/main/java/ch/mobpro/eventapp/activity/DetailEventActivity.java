@@ -288,11 +288,10 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
     }
 
     private void updateToolbarName(String name) {
-        if (mToolbar == null) {
-            mToolbar = findViewById(R.id.toolbarDetail);
+        if (mCollapsingToolbar == null) {
+            mCollapsingToolbar = findViewById(R.id.toolbarDetail);
         }
-        mToolbar.setTitle(name);
-        setSupportActionBar(mToolbar);
+        mCollapsingToolbar.setTitle(name);
     }
 
     @Override

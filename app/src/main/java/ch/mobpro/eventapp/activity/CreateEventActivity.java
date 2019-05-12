@@ -184,9 +184,10 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
     }
 
     private void updateToolbarName(String name) {
-        Toolbar toolbar = findViewById(R.id.toolbarDetail);
-        toolbar.setTitle(name);
-        setSupportActionBar(toolbar);
+        if (mCollapsingToolbar == null) {
+            mCollapsingToolbar = findViewById(R.id.collapse_toolbar);
+        }
+        mCollapsingToolbar.setTitle(name);
     }
 
     private void parseToInt(EditText editText) {
