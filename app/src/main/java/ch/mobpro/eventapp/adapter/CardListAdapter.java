@@ -3,6 +3,7 @@ package ch.mobpro.eventapp.adapter;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
@@ -98,6 +99,8 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.EventC
         // - replace the contents of the view with that element
         if (events.get(position).getEventImage() != null) {
             holder.eventImage.setImageBitmap(getBitmapFromString(events.get(position).getEventImage()));
+        } else {
+            holder.eventImage.setImageResource(R.drawable.event_default_image);
         }
         holder.eventNameText.setText(events.get(position).getName());
         if (!events.get(position).getCategories().isEmpty()) {
