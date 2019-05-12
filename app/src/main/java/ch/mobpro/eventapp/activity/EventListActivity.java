@@ -112,6 +112,12 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
         handleIntent(getIntent());
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateEventList(viewModel.getEvents().getValue());
+    }
+
     private void showCreateActivity() {
         Intent intent = new Intent(this, CreateEventActivity.class);
         startActivityForResult(intent, CREATE_EVENT);
@@ -185,6 +191,11 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
                 String id = data.getStringExtra(DELETE_EVENT_REGISTRATION_EXTRA);
                 viewModel.deleteEvent(id);
 
+            } else if (data.hasExtra(UPDATE_EVENT_EXTRA)) {
+                Event event = (Event) data.getSerializableExtra(UPDATE_EVENT_EXTRA);
+                if (event != null) {
+                    viewModel.updateEvent(event);
+                }
             }
         } else if (requestCode == CREATE_EVENT && data != null) {
             Event event = (Event) data.getSerializableExtra(CREATE_EVENT_EXTRA);

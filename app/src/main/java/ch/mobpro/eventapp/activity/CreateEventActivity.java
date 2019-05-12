@@ -18,6 +18,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,9 +40,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 
 import javax.inject.Inject;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Calendar;
@@ -96,6 +95,10 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
         mCollapsingToolbar = findViewById(R.id.collapse_toolbar);
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
                 R.drawable.event_default_image);
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        viewModel.event.setEventImage(Base64.encodeToString(byteArray, Base64.DEFAULT));
         Palette.from(bitmap).generate(palette -> {
             int mutedColor = palette.getLightMutedColor(R.attr.colorPrimary);
             mCollapsingToolbar.setContentScrimColor(mutedColor);

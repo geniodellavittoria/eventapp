@@ -194,7 +194,7 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
         categorySpinner.setEnabled(isOwner);
         String[] categories = getResources().getStringArray(R.array.eventCategories);
         for (int i = 0; i < categories.length; i++)
-            if (categories[i] == viewModel.event.getCategories().get(0).getCategory())
+            if (categories[i].equalsIgnoreCase(viewModel.event.getCategories().get(0).getCategory()))
                 categorySpinner.setSelection(i);
 
         categorySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -288,10 +288,10 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
     }
 
     private void updateToolbarName(String name) {
-        if (mCollapsingToolbar == null) {
-            mCollapsingToolbar = findViewById(R.id.toolbarDetail);
+        if (mToolbar == null) {
+            mToolbar = findViewById(R.id.toolbarDetail);
         }
-        mCollapsingToolbar.setTitle(name);
+        mToolbar.setTitle(name);
     }
 
     @Override
@@ -301,10 +301,10 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
             getMenuInflater().inflate(R.menu.save, menu);
         } else {
             if (viewModel.isRegisteredForEvent()) {
-            getMenuInflater().inflate(R.menu.unregister, menu);
+                getMenuInflater().inflate(R.menu.unregister, menu);
 
             } else {
-            getMenuInflater().inflate(R.menu.register, menu);
+                getMenuInflater().inflate(R.menu.register, menu);
 
             }
         }
@@ -410,6 +410,11 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                 new LatLng(mLastKnownLocation.getLatitude(),
                                         mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                    } else {
+                        Log.d(TAG, "Current location is null. Using defaults.");
+                        Log.e(TAG, "Exception: %s", task.getException());
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mDefaultLocation, DEFAULT_ZOOM));
+                        mMap.getUiSettings().setMyLocationButtonEnabled(false);
                     }
                     mMap.setOnMapClickListener(latLng -> {
                         if (isOwner) {
