@@ -3,7 +3,8 @@
     <item
             android:id="@+id/action_register"
             android:title="@string/action_register"
-            android:icon="@android:drawable/ic_menu_today"
+            android:icon="@drawable/ic_event_available_white_24dp"
+            android:iconTint="@color/white"
             app:showAsAction="ifRoom">
     </item>
 </menu>

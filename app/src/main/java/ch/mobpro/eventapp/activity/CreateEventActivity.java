@@ -6,15 +6,21 @@ import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import ch.mobpro.eventapp.R;
@@ -40,7 +46,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Calendar;
 
-import static ch.mobpro.eventapp.activity.IntentConstants.PICK_IMAGE;
+import static ch.mobpro.eventapp.activity.IntentConstants.*;
 import static ch.mobpro.eventapp.utils.Base64BitmapUtil.getBitmapFromString;
 
 
@@ -66,6 +72,7 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
     private Location mLastKnownLocation;
     private LatLng mDefaultLocation = new LatLng(47.14, 8.43);
     private Marker marker;
+    private CollapsingToolbarLayout mCollapsingToolbar;
 
     @Override
     protected int layoutRes() {
@@ -77,7 +84,6 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
         super.onCreate(savedInstanceState);
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(CreateEventViewModel.class);
         dataBinding.setViewModel(viewModel);
-//        this.updateToolbarName(getString(R.string.new_event));
 
         viewModel.getCreationSuccess().observe(this, this::onCreateSuccess);
         viewModel.getUpdatedEventName().observe(this, this::updateToolbarName);
@@ -86,6 +92,15 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
         Toolbar toolbar = findViewById(R.id.toolbarDetail);
         toolbar.setTitle(getString(R.string.new_event));
         setSupportActionBar(toolbar);
+
+        mCollapsingToolbar = findViewById(R.id.collapse_toolbar);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),
+                R.drawable.event_default_image);
+        Palette.from(bitmap).generate(palette -> {
+            int mutedColor = palette.getLightMutedColor(R.attr.colorPrimary);
+            mCollapsingToolbar.setContentScrimColor(mutedColor);
+        });
+
         pickStartTime = findViewById(R.id.editStartTime);
         pickStartTime.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
@@ -184,10 +199,29 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
         viewModel.event.setPlace(placeInt);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.save, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        Log.d(TAG, "onOptionsItemSelected: " + id);
+        if (id == R.id.action_save) {
+            viewModel.createEvent();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void onCreateSuccess(boolean isSuccess) {
         if (!isSuccess) {
             Toast.makeText(this, "Could not create  event", Toast.LENGTH_LONG).show();
         } else {
+            Intent intent = new Intent();
+            intent.putExtra(CREATE_EVENT_EXTRA, viewModel.eventResult);
+            setResult(CREATE_EVENT, intent);
             finish();
         }
     }

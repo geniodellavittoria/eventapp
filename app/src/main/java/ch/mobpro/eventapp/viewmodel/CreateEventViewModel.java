@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModel;
 import android.util.Log;
 import ch.mobpro.eventapp.dto.EventDetailForm;
 import ch.mobpro.eventapp.dto.CreateEventFormEventMapper;
+import ch.mobpro.eventapp.model.Event;
 import ch.mobpro.eventapp.model.User;
 import ch.mobpro.eventapp.repository.EventRepository;
 import ch.mobpro.eventapp.service.AuthInterceptor;
@@ -33,6 +34,7 @@ public class CreateEventViewModel extends ViewModel {
 
     private CompositeDisposable disposable;
     public EventDetailForm event = new EventDetailForm();
+    public Event eventResult;
 
     @Inject
     CreateEventViewModel(EventService eventService) {
@@ -47,6 +49,7 @@ public class CreateEventViewModel extends ViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(event -> {
+                    eventResult = event;
                     creationSuccess.postValue(true);
                 }, throwable -> {
                     creationSuccess.postValue(false);

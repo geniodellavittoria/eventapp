@@ -225,6 +225,10 @@ public class Event implements Serializable {
     }
 
     public void setUsedPlace(Integer usedPlace) {
-        this.usedPlace = usedPlace;
+        if (usedPlace == null) {
+            this.usedPlace = 0;
+        } else {
+            this.usedPlace = usedPlace;
+        }
     }
 }

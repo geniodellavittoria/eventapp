@@ -9,6 +9,7 @@ import android.util.Log;
 import ch.mobpro.eventapp.dto.CreateEventFormEventMapper;
 import ch.mobpro.eventapp.dto.EventRegistrationForm;
 import ch.mobpro.eventapp.model.Event;
+import ch.mobpro.eventapp.model.EventRegistration;
 import ch.mobpro.eventapp.repository.SessionTokenRepository;
 import ch.mobpro.eventapp.service.EventRegistrationService;
 import ch.mobpro.eventapp.service.EventService;
@@ -49,6 +50,7 @@ public class EditEventViewModel extends ViewModel {
     private MutableLiveData<Boolean> deleteSuccess = new MutableLiveData<>();
     private MutableLiveData<Boolean> eventRegistrationSuccess = new MutableLiveData<>();
     private MutableLiveData<Boolean> onEventImageSelected = new MutableLiveData<>();
+    private MutableLiveData<Boolean> deleteEventRegistrationSuccess = new MutableLiveData<>();
 
     @Inject
     public EditEventViewModel(EventService eventService,
@@ -96,9 +98,23 @@ public class EditEventViewModel extends ViewModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(res -> {
+                    this.event = res;
                     eventRegistrationSuccess.postValue(true);
                 }, throwable -> {
                     eventRegistrationSuccess.postValue(false);
+                    Log.e(TAG, "Error occurred", throwable);
+                }));
+    }
+
+    public void unregisterEvent() {
+        disposable.add(eventRegistrationService.deleteEventRegistration(event.getId(), sessionTokenRepository.getUsername())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(res -> {
+                    this.event = res;
+                    deleteEventRegistrationSuccess.postValue(true);
+                }, throwable -> {
+                    deleteEventRegistrationSuccess.postValue(false);
                     Log.e(TAG, "Error occurred", throwable);
                 }));
     }
@@ -163,7 +179,21 @@ public class EditEventViewModel extends ViewModel {
         return onEventImageSelected;
     }
 
+    public MutableLiveData<Boolean> getDeleteEventRegistrationSuccess() {
+        return deleteEventRegistrationSuccess;
+    }
+
     public void storeEventImage(InputStream dataStream) throws IOException {
         event.setEventImage(getBase64FromStream(dataStream));
+    }
+
+    public boolean isRegisteredForEvent() {
+        if (sessionTokenRepository.getUsername() == null) {
+            return false;
+        }
+        return event.getEventRegistrations().stream()
+                .map(EventRegistration::getUser)
+                .filter(u -> u != null && u.getUsername() != null)
+                .anyMatch(u -> u.getUsername().equals(sessionTokenRepository.getUsername()));
     }
 }

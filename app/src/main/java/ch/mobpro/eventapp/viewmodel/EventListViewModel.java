@@ -13,6 +13,7 @@ import io.reactivex.schedulers.Schedulers;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Optional;
 
 public class EventListViewModel extends ViewModel {
 
@@ -61,5 +62,33 @@ public class EventListViewModel extends ViewModel {
                         loading.setValue(false);
                     }
                 }));
+    }
+
+    public void updateEvent(Event event) {
+        List<Event> eventList = events.getValue();
+        Optional<Event> eventOptional = events.getValue().stream()
+                .filter(e -> e.getId().equals(event.getId()))
+                .findFirst();
+        if (eventList != null && eventOptional.isPresent()) {
+            int index = eventList.indexOf(eventOptional.get());
+            eventList.set(index, event);
+            events.postValue(eventList);
+        }
+    }
+
+    public void deleteEvent(String id) {
+        List<Event> eventList = events.getValue();
+        if (eventList != null) {
+            eventList.removeIf(e -> e.getId().equals(id));
+            events.postValue(eventList);
+        }
+    }
+
+    public void addEvent(Event event) {
+        List<Event> eventList = events.getValue();
+        if (eventList != null) {
+            eventList.add(event);
+            events.postValue(eventList);
+        }
     }
 }

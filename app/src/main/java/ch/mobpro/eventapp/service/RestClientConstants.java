@@ -6,7 +6,7 @@ public class RestClientConstants {
     public static final String EVENT_CATEGORY = "/category";
     public static final String CATEGORY_ID = "/{" + RestPlaceholderVariables.CATEGORY_ID + "}";
     public static final String INVITATION_ID = "/{" + RestPlaceholderVariables.EVENT_INVITATION_ID + "}";
-    public static final String REGISTRATION_ID = "/{" + RestPlaceholderVariables.EVENT_REGISTRATION_ID + "}";
+    public static final String USER_ID = "/{" + RestPlaceholderVariables.USER_ID + "}";
     public static final String EVENT_REGISTRATION = "/registration";
     public static final String EVENT_INVITATION = "/invitation";
     public static final String USER = "/api/v1/user";

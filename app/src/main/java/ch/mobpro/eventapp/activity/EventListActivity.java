@@ -11,6 +11,7 @@ import android.location.Location;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -47,7 +48,8 @@ import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.ToDoubleFunction;
+
+import static ch.mobpro.eventapp.activity.IntentConstants.*;
 
 public class EventListActivity extends BaseActivity<ActivityEventListBinding>
         implements NavigationView.OnNavigationItemSelectedListener, CardListAdapter.OnEventListener {
@@ -110,15 +112,9 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
         handleIntent(getIntent());
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-    }
-
     private void showCreateActivity() {
         Intent intent = new Intent(this, CreateEventActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, CREATE_EVENT);
     }
 
     private void setSetUserInformationOnNavigationView(NavigationView navigationView) {
@@ -172,6 +168,31 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
     }
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == VIEW_EVENT_DETAILS && data != null) {
+            if (data.hasExtra(UPDATE_EVENT_REGISTRATION_EXTRA)) {
+                Event event = (Event) data.getSerializableExtra(UPDATE_EVENT_REGISTRATION_EXTRA);
+                if (event != null) {
+                    viewModel.updateEvent(event);
+                }
+
+            } else if (data.hasExtra(DELETE_EVENT_REGISTRATION_EXTRA)) {
+                Event event = (Event) data.getSerializableExtra(DELETE_EVENT_REGISTRATION_EXTRA);
+                if (event != null) {
+                    viewModel.updateEvent(event);
+                }
+            } else if (data.hasExtra(DELETE_EVENT_EXTRA)) {
+                String id = data.getStringExtra(DELETE_EVENT_REGISTRATION_EXTRA);
+                viewModel.deleteEvent(id);
+
+            }
+        } else if (requestCode == CREATE_EVENT && data != null) {
+            Event event = (Event) data.getSerializableExtra(CREATE_EVENT_EXTRA);
+            viewModel.addEvent(event);
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         MenuItem searchItem = menu.findItem(R.id.searchEventView);
@@ -201,7 +222,7 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            startActivity(new Intent(this, SettingsActivity.class));
+            startActivityForResult(new Intent(this, SettingsActivity.class), VIEW_EVENT_DETAILS);
             return true;
         }
         if (id == R.id.action_nearest) {
@@ -281,6 +302,6 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
         Intent intent = new Intent(this, DetailEventActivity.class);
         Event selectedEvent = events.get(position);
         intent.putExtra("event", selectedEvent);
-        startActivity(intent);
+        startActivityForResult(intent, VIEW_EVENT_DETAILS);
     }
 }

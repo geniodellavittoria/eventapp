@@ -50,7 +50,7 @@ import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 
-import static ch.mobpro.eventapp.activity.IntentConstants.PICK_IMAGE;
+import static ch.mobpro.eventapp.activity.IntentConstants.*;
 import static ch.mobpro.eventapp.utils.Base64BitmapUtil.getBitmapFromString;
 
 public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding> implements OnMapReadyCallback {
@@ -106,6 +106,7 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
         viewModel.getDeleteSuccess().observe(this, this::onDeleteEvent);
         viewModel.getEventRegistrationSuccess().observe(this, this::onEventRegistration);
         viewModel.getOnEventImageSelected().observe(this, this::onEventImageSelected);
+        viewModel.getDeleteEventRegistrationSuccess().observe(this, this::onDeleteEventRegistration);
 
         String currentUser = AuthInterceptor.getInstance().getUsername();
 
@@ -252,10 +253,25 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
         }
     }
 
+    private void onDeleteEventRegistration(Boolean eventRegistrationDeleted) {
+        if (!eventRegistrationDeleted) {
+            Toast.makeText(this, "Could not delete event registration", Toast.LENGTH_LONG).show();
+        } else {
+            Intent intent = new Intent();
+            intent.putExtra(DELETE_EVENT_REGISTRATION_EXTRA, viewModel.event);
+            setResult(VIEW_EVENT_DETAILS, intent);
+            finish();
+        }
+
+    }
+
     private void onEventRegistration(Boolean isRegistrationSuccess) {
         if (!isRegistrationSuccess) {
             Toast.makeText(this, "Could not register for event", Toast.LENGTH_LONG).show();
         } else {
+            Intent intent = new Intent();
+            intent.putExtra(UPDATE_EVENT_REGISTRATION_EXTRA, viewModel.event);
+            setResult(VIEW_EVENT_DETAILS, intent);
             finish();
         }
     }
@@ -264,6 +280,9 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
         if (!deleteEvent) {
             Toast.makeText(this, "Could not delete event", Toast.LENGTH_LONG).show();
         } else {
+            Intent intent = new Intent();
+            intent.putExtra(DELETE_EVENT_EXTRA, viewModel.event.getId());
+            setResult(VIEW_EVENT_DETAILS, intent);
             finish();
         }
     }
@@ -279,9 +298,16 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (isOwner()) {
-            getMenuInflater().inflate(R.menu.detail, menu);
+            getMenuInflater().inflate(R.menu.delete, menu);
+            getMenuInflater().inflate(R.menu.save, menu);
         } else {
+            if (viewModel.isRegisteredForEvent()) {
+            getMenuInflater().inflate(R.menu.unregister, menu);
+
+            } else {
             getMenuInflater().inflate(R.menu.register, menu);
+
+            }
         }
         return true;
     }
@@ -294,6 +320,10 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
             viewModel.deleteEvent();
         } else if (id == R.id.action_register) {
             viewModel.registerEvent();
+        } else if (id == R.id.action_save) {
+            viewModel.editEvent();
+        } else if (id == R.id.action_unregister) {
+            viewModel.unregisterEvent();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -312,8 +342,10 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
         if (!isSuccess) {
             Toast.makeText(this, "Could not edit  event", Toast.LENGTH_LONG).show();
         } else {
-            Intent intent = new Intent(this, EventListActivity.class);
-            startActivity(intent);
+            Intent intent = new Intent();
+            intent.putExtra(UPDATE_EVENT_EXTRA, viewModel.event);
+            setResult(UPDATE_EVENT, intent);
+            finish();
         }
     }
 
