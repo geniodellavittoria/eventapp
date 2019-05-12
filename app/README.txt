@@ -25,4 +25,4 @@ Technologien & Architektur
  * Kotlin
 
 Bemerkungen
-Das löschen der Events war in unseren Mockups nicht vorgesehen
+Das Löschen der Events war in unseren Mockups nicht vorgesehen.
