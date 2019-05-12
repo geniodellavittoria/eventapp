@@ -273,7 +273,6 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
             mToolbar = findViewById(R.id.toolbarDetail);
         }
         mToolbar.setTitle(name);
-//        toolbar.setTitle(name);
         setSupportActionBar(mToolbar);
     }
 

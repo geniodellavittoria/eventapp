@@ -137,8 +137,10 @@
                                   android:text="@string/eventIsPrivateEvent"
                                   android:checked="@={viewModel.event.privateEvent}"/>
                         <Button
+                                android:id="@+id/choose_event_image_button"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:onClick="@{() -> viewModel.chooseEventImage()}"
                                 android:text="@string/eventImage"/>
                         <android.support.design.widget.TextInputLayout
                                 android:layout_width="match_parent"

@@ -15,8 +15,12 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
 import javax.inject.Inject;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalTime;
+
+import static ch.mobpro.eventapp.utils.Base64BitmapUtil.getBase64FromStream;
 
 public class CreateEventViewModel extends ViewModel {
 
@@ -25,6 +29,7 @@ public class CreateEventViewModel extends ViewModel {
 
     private MutableLiveData<Boolean> creationSuccess = new MutableLiveData<>();
     private MutableLiveData<String> updateEventTitle = new MutableLiveData<>();
+    private MutableLiveData<Boolean> onEventImageSelected = new MutableLiveData<>();
 
     private CompositeDisposable disposable;
     public EventDetailForm event = new EventDetailForm();
@@ -49,6 +54,9 @@ public class CreateEventViewModel extends ViewModel {
                 }));
     }
 
+    public void chooseEventImage() {
+        onEventImageSelected.postValue(true);
+    }
 
     public MutableLiveData<Boolean> getCreationSuccess() {
         return creationSuccess;
@@ -58,7 +66,15 @@ public class CreateEventViewModel extends ViewModel {
         updateEventTitle.postValue(name.toString());
     }
 
+    public MutableLiveData<Boolean> getOnEventImageSelected() {
+        return onEventImageSelected;
+    }
+
     public LiveData<String> getUpdatedEventName() {
         return updateEventTitle;
+    }
+
+    public void storeEventImage(InputStream dataStream) throws IOException {
+        event.setEventImage(getBase64FromStream(dataStream));
     }
 }

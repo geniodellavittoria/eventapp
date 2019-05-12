@@ -16,10 +16,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.Toast;
+import android.widget.*;
 import ch.mobpro.eventapp.R;
 import ch.mobpro.eventapp.base.BaseActivity;
 import ch.mobpro.eventapp.databinding.ActivityCreateEventBinding;
@@ -36,9 +33,15 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 
 import javax.inject.Inject;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Calendar;
+
+import static ch.mobpro.eventapp.activity.IntentConstants.PICK_IMAGE;
+import static ch.mobpro.eventapp.utils.Base64BitmapUtil.getBitmapFromString;
 
 
 public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding> implements OnMapReadyCallback {
@@ -78,6 +81,7 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
 
         viewModel.getCreationSuccess().observe(this, this::onCreateSuccess);
         viewModel.getUpdatedEventName().observe(this, this::updateToolbarName);
+        viewModel.getOnEventImageSelected().observe(this, this::onEventImageSelected);
 
         Toolbar toolbar = findViewById(R.id.toolbarDetail);
         toolbar.setTitle(getString(R.string.new_event));
@@ -271,6 +275,33 @@ public class CreateEventActivity extends BaseActivity<ActivityCreateEventBinding
             }
         } catch (SecurityException e) {
             Log.e("Exception: %s", e.getMessage());
+        }
+    }
+
+    private void onEventImageSelected(Boolean eventImageSelected) {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PICK_IMAGE) {
+            if (data == null) {
+                //Display an error
+                return;
+            }
+            try {
+                InputStream dataStream = this.getContentResolver().openInputStream(data.getData());
+                ImageView imageView = findViewById(R.id.header);
+                viewModel.storeEventImage(dataStream);
+                imageView.setImageBitmap(getBitmapFromString(viewModel.event.getEventImage()));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
