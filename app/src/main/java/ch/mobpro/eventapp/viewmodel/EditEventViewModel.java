@@ -81,9 +81,7 @@ public class EditEventViewModel extends ViewModel {
         disposable.add(eventService.deleteEvent(event.getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(res -> {
-                    deleteSuccess.postValue(true);
-                }, throwable -> {
+                .subscribe(res -> deleteSuccess.postValue(true), throwable -> {
                     deleteSuccess.postValue(false);
                     Log.e(TAG, "Error occurred", throwable);
                 }));

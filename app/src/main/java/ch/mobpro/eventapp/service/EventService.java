@@ -1,9 +1,9 @@
 package ch.mobpro.eventapp.service;
 
+import ch.mobpro.eventapp.dto.Response;
 import ch.mobpro.eventapp.model.Event;
 import io.reactivex.Maybe;
 import io.reactivex.Single;
-import retrofit2.Response;
 import retrofit2.http.*;
 
 import java.util.List;

@@ -188,7 +188,7 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
                     viewModel.updateEvent(event);
                 }
             } else if (data.hasExtra(DELETE_EVENT_EXTRA)) {
-                String id = data.getStringExtra(DELETE_EVENT_REGISTRATION_EXTRA);
+                String id = data.getStringExtra(DELETE_EVENT_EXTRA);
                 viewModel.deleteEvent(id);
 
             } else if (data.hasExtra(UPDATE_EVENT_EXTRA)) {
