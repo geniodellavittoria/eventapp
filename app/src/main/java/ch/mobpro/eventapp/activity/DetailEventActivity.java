@@ -288,10 +288,10 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
     }
 
     private void updateToolbarName(String name) {
-        if (mToolbar == null) {
-            mToolbar = findViewById(R.id.toolbarDetail);
+        if (mCollapsingToolbar == null) {
+            mCollapsingToolbar = findViewById(R.id.collapse_toolbar);
         }
-        mToolbar.setTitle(name);
+        mCollapsingToolbar.setTitle(name);
     }
 
     @Override
@@ -302,10 +302,8 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
         } else {
             if (viewModel.isRegisteredForEvent()) {
                 getMenuInflater().inflate(R.menu.unregister, menu);
-
             } else {
                 getMenuInflater().inflate(R.menu.register, menu);
-
             }
         }
         return true;
