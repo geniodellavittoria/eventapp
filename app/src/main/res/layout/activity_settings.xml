@@ -29,7 +29,7 @@
             <fragment
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:id="@+id/map"
+                    android:id="@+id/map_settings"
                     android:name="com.google.android.gms.maps.SupportMapFragment" android:layout_margin="16dp"/>
         </LinearLayout>
 

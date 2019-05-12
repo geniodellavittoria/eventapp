@@ -235,8 +235,7 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == PICK_IMAGE) {
             if (data == null) {
                 //Display an error
@@ -377,9 +376,11 @@ public class DetailEventActivity extends BaseActivity<ActivityDetailEventBinding
                 locationResult.addOnCompleteListener(this, task -> {
                     mLastKnownLocation = (Location) task.getResult();
                     marker = mMap.addMarker(new MarkerOptions().position(new LatLng(viewModel.event.getLatitude(), viewModel.event.getLongitude())));
-                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-                            new LatLng(mLastKnownLocation.getLatitude(),
-                                    mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                    if (mLastKnownLocation != null) {
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
+                                new LatLng(mLastKnownLocation.getLatitude(),
+                                        mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                    }
                     mMap.setOnMapClickListener(latLng -> {
                         if (isOwner) {
                             Toast.makeText(DetailEventActivity.this, String.format("you tapped on lat:%.2f long:%.2f", latLng.latitude, latLng.longitude), Toast.LENGTH_SHORT).show();

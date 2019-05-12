@@ -5,9 +5,11 @@ import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -216,8 +218,15 @@ public class EventListActivity extends BaseActivity<ActivityEventListBinding>
                     @Override
                     public void onComplete(@NonNull Task task) {
                         if (task.isSuccessful()) {
-                            mLastKnownLocation = (Location) task.getResult();
-                            LatLng mLastKnownLatLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(EventListActivity.this);
+                            LatLng mLastKnownLatLng;
+                            if (!preferences.getBoolean("deviceLocation", false)) {
+                                mLastKnownLatLng = new LatLng(Double.parseDouble(preferences.getString(IntentConstants.CHOOSEN_LAT, "")),
+                                        Double.parseDouble(preferences.getString(IntentConstants.CHOOSEN_LONG, "")));
+                            } else {
+                                mLastKnownLocation = (Location) task.getResult();
+                                mLastKnownLatLng = new LatLng(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                            }
                             Comparator<Event> comp = (o1, o2) -> {
                                 LatLng loc1 = new LatLng(o1.getLatitude(), o1.getLongitude());
                                 LatLng loc2 = new LatLng(o2.getLatitude(), o2.getLongitude());
